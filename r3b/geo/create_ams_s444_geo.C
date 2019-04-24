@@ -95,6 +95,12 @@ void create_ams_geo(const char* geoTag="s444")
   geoBuild->createMedium(mFe);
   TGeoMedium* pMedFe = gGeoMan->GetMedium("iron");
   if ( ! pMedFe ) Fatal("Main", "Medium iron not found");
+
+  FairGeoMedium* mBe      = geoMedia->getMedium("beryllium");
+  if ( ! mBe ) Fatal("Main", "FairMedium beryllium not found");
+  geoBuild->createMedium(mBe);
+  TGeoMedium* pMedBe = gGeoMan->GetMedium("beryllium");
+  if ( ! pMedBe ) Fatal("Main", "Medium beryllium not found");
   // --------------------------------------------------------------------------
 
 
@@ -142,17 +148,32 @@ void create_ams_geo(const char* geoTag="s444")
 	//***************************************************************/
   
 	// Si Shape & volume: TraBox type: TGeoBBox
+  //HALF SIZES
 	dx = 3.600000;
-	dy = 2.070000;
-	dz = 0.015000;
+	dy = 2.050000;
+//	dz = 0.015000;
+  dz = 0.000050; //half a micron
+//  dz = 0.000001;
+
 	// Volume: TraLog
 	TGeoVolume *TraLog = gGeoManager->MakeBox("TraLog",pMedSi,dx,dy,dz);
 	TraLog->SetVisLeaves(kTRUE);
 	TraLog->SetLineColor(33);
 
+  //Be target shape and volume
+  //HALF SIZES
+  dx = 1.500000;
+  dy = 1.500000;
+  dz = 1.300000e-5;
+
+  TGeoVolume *Targ = gGeoManager->MakeBox("Targ",pMedBe,dx,dy,dz);
+  Targ->SetVisLeaves(kTRUE);
+  Targ->SetLineColor(2);
+
+
   
 	//TRANSFORMATION MATRICES
-	dx = 0.000000;
+/*	dx = 0.000000;
 	dy = 0.000000;
 	dz = 13.50000;
 	// Rotation:
@@ -172,50 +193,61 @@ void create_ams_geo(const char* geoTag="s444")
 	thz = 0.000000;    phz = 0.000000;
 	TGeoRotation *       pMatrix5 = new TGeoRotation("",thx,phx,thy,phy,thz,phz);
 	TGeoCombiTrans*   pMatrix4 = new TGeoCombiTrans("", dx,dy,dz,pMatrix5);
-  
+ */ 
 	//Combi transformation:
 	dx = 0.000000;
-	dy = -2.100000;
-	dz = 4.470000;
+	dy = 0.000000;
+	dz = 5.000000;
 	// Rotation:
-	thx = 0.000000;    phx = 0.000000;
-	thy = 90.000000;    phy = 0.000000;
-	thz = 90.000000;    phz = 90.000000;
+	thx = 90.000000;    phx = 0.000000;
+	thy = 90.000000;    phy = 90.000000;
+	thz = 0.000000;    phz = 0.000000;
 	TGeoRotation *       pMatrix7 = new TGeoRotation("",thx,phx,thy,phy,thz,phz);
 	TGeoCombiTrans*   pMatrix6 = new TGeoCombiTrans("", dx,dy,dz,pMatrix7);
   
 	//Combi transformation:
 	dx = 0.000000;
-	dy = 2.100000;
-	dz = 4.470000;
+	dy = 0.000000;
+	dz = 5.20000;
 	// Rotation:
-	thx = 180.000000;    phx = 0.000000;
-	thy = 90.000000;    phy = 0.000000;
-	thz = 90.000000;    phz = 270.000000;
+	thx = 90.000000;    phx = 0.000000;
+	thy = 90.000000;    phy = 90.000000;
+	thz = 0.000000;    phz = 0.000000;
 	TGeoRotation *	    pMatrix9 = new TGeoRotation("",thx,phx,thy,phy,thz,phz);
 	TGeoCombiTrans*   pMatrix8 = new TGeoCombiTrans("", dx,dy,dz,pMatrix9);
   
 	//Combi transformation:
-	dx = 2.100000;
+	dx = 0.000000;
 	dy = 0.000000;
-	dz = 4.470000;
+	dz = 29.00000;
 	// Rotation:
-	thx = 180.000000;    phx = 0.000000;
+	thx = 90.000000;    phx = 0.000000;
 	thy = 90.000000;    phy = 90.000000;
-	thz = 90.000000;    phz = 0.000000;
+	thz = 0.000000;    phz = 0.000000;
 	TGeoRotation *        pMatrix11 = new TGeoRotation("",thx,phx,thy,phy,thz,phz);
 	TGeoCombiTrans*   pMatrix10 = new TGeoCombiTrans("", dx,dy,dz,pMatrix11);
   
 	//Combi transformation:
-	dx = -2.100000;
+	dx = 0.000000;
 	dy = 0.000000;
-	dz = 4.470000;
+	dz = 29.20000;
 	// Rotation:
-	thx = 0.000000;    phx = 0.000000;
+	thx = 90.000000;    phx = 0.000000;
 	thy = 90.000000;    phy = 90.000000;
-	thz = 90.000000;    phz = 180.000000;
+	thz = 0.000000;    phz = 0.000000;
 	TGeoRotation *	    pMatrix13 = new TGeoRotation("",thx,phx,thy,phy,thz,phz);
 	TGeoCombiTrans*   pMatrix12 = new TGeoCombiTrans("", dx,dy,dz,pMatrix13);
+
+    //Combi transformation:
+  dx = 0.000000;
+  dy = 0.000000;
+  dz = 0.000000;
+  // Rotation:
+  thx = 90.000000;    phx = 0.000000;
+  thy = 90.000000;    phy = 90.000000;
+  thz = 0.000000;    phz = 0.000000;
+  TGeoRotation *      pMatrix15 = new TGeoRotation("",thx,phx,thy,phy,thz,phz);
+  TGeoCombiTrans*   pMatrix14 = new TGeoCombiTrans("", dx,dy,dz,pMatrix15);
  
 
 	/************ Assembling everything together ****************/
@@ -227,6 +259,7 @@ void create_ams_geo(const char* geoTag="s444")
 	aTra->AddNode(TraLog,2, pMatrix8);//up
 	aTra->AddNode(TraLog,3, pMatrix10);//left
 	aTra->AddNode(TraLog,4, pMatrix12);//right
+  aTra->AddNode(Targ,5, pMatrix14);//target
 	//aTra->AddNode(TraLog,6, pMatrix2);
   
   
