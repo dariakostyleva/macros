@@ -1,0 +1,140 @@
+#include "TCanvas.h"
+#include "TROOT.h"
+#include "TGraphErrors.h"
+#include "TF1.h"
+
+void qval_mom(){
+
+	TCanvas* mycanvas = new TCanvas("mycanvas","mycanvas",1300,0, 1000,1000);
+	mycanvas->Divide(1,3);
+	mycanvas->cd(1);
+	const int n_points = 21;
+	Double_t q_vals[n_points]={0.0005, 0.001, 0.0015, 0.002, 0.0025, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009, 0.010, 0.012, 0.015, 0.017, 0.019, 0.021, 0.023, 0.025, 0.027 };
+	Double_t mom_vals[n_points]={0.100967, 0.143272, 0.174591, 0.202106, 0.224812, 0.247471, 0.284004, 0.318119, 0.348724, 0.375557, 0.402966, 0.426929, 0.449352, 0.492371, 0.550659, 0.586452, 0.620327, 0.652485,0.685322, 0.712490, 0.740807};
+	TGraph * graph = new TGraph(n_points,q_vals,mom_vals);
+	//graph->SetTitle("qvalue vs delta of momentum");
+	graph->SetMarkerSize(2);
+	graph->SetMarkerStyle(kFullCircle);
+	graph->SetMarkerColor(kBlack);
+	graph->SetLineColor(kBlue);
+	graph->GetXaxis()->SetTitle("Qvalue [GeV]");
+  	graph->GetYaxis()->SetTitle("Longitudinal momentum of HI) [GeV/c]");
+
+  	
+  	// sqare root func to fit graph
+  	TF1 *xsq = new TF1("xsq","[0]*sqrt(x)",0,10);
+  	graph->Fit("xsq");
+  	graph->Draw("AP");
+  	//line to show FRS acceptance
+  	TLine *acc = new TLine(0,0.717706,0.029,0.717706);
+  	acc->SetLineWidth(4);
+  	acc->SetLineColor(kBlue);
+  	acc->Draw("same");
+  	
+  	mycanvas->cd(2);
+  	//long mom histo from file and rect fit to it
+    TFile * f = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_1m.root","READ");
+    TH1F * h_s_pz = (TH1F*)f->Get("h_s_pz");
+    TF1 * rect = new TF1("rect", "(x>35.800137 && x<36.000565)*[0] ", 35.6,36.2);
+    h_s_pz->Fit("rect");
+    Double_t chi2 = rect->GetChisquare();
+    cout << "chi2 of rect fit = " << chi2 << endl;
+    TH1F * rect_hist = (TH1F*)rect->CreateHistogram();
+    cout <<"bin number " << rect_hist->GetNbinsX() << endl;
+   // std::cout<<"height = "<<rect->GetParameter(0)<<std::endl;
+    Double_t half_height = rect->GetParameter(0)/2;
+    printf("FWHM of rect fit = %f\n", half_height);
+
+    TF1 * mid = new TF1("mid","3.871425",30,40); 
+	//mid->Draw("same");
+
+    mycanvas->cd(3);
+    rect_hist->SetFillColor(kBlue);
+    rect_hist->Draw("bar");
+
+    TCanvas* mycanvas2 = new TCanvas("mycanvas2","mycanvas2",1300,0, 1000,1000);
+    graph->Draw("AP");
+    acc->Draw("same");
+/*
+ 
+	TFile * f2 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_1k.root","READ");
+	TH1F * h_s_pz_2 = (TH1F*)f2->Get("h_s_pz");
+
+	TFile * f3 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_10k.root","READ");
+	TH1F * h_s_pz_3 = (TH1F*)f3->Get("h_s_pz");
+
+	TFile * f4 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_500ev.root","READ");
+	TH1F * h_s_pz_4 = (TH1F*)f4->Get("h_s_pz");
+
+	TFile * f5 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_100ev.root","READ");
+	TH1F * h_s_pz_5 = (TH1F*)f5->Get("h_s_pz");
+
+	TFile * f6 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_300ev.root","READ");
+	TH1F * h_s_pz_6 = (TH1F*)f6->Get("h_s_pz");
+
+	TFile * f7 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_200ev.root","READ");
+	TH1F * h_s_pz_7 = (TH1F*)f7->Get("h_s_pz");
+
+	TFile * f8 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_150ev.root","READ");
+	TH1F * h_s_pz_8 = (TH1F*)f8->Get("h_s_pz");
+
+	TFile * f9 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_400ev.root","READ");
+	TH1F * h_s_pz_9 = (TH1F*)f9->Get("h_s_pz");
+
+    TCanvas * c1 = new TCanvas();
+    c1->Divide(1,8);
+    c1->cd(1);
+    h_s_pz->Draw();
+
+    c1->cd(2);
+    h_s_pz_2->Draw();
+
+    c1->cd(3);
+    h_s_pz_3->Draw();
+
+    c1->cd(4);
+    h_s_pz_4->Draw();
+
+    c1->cd(5);
+    h_s_pz_5->Draw();
+
+    c1->cd(6);
+    h_s_pz_6->Draw();
+
+    c1->cd(7);
+    h_s_pz_7->Draw();
+
+    c1->cd(8);
+    h_s_pz_8->Draw();
+
+    c1->cd(8);
+    h_s_pz_9->Draw();
+
+    Double_t ks2 = h_s_pz->KolmogorovTest(h_s_pz_2); 
+    Double_t ks3 = h_s_pz->KolmogorovTest(h_s_pz_3); 
+    Double_t ks4 = h_s_pz->KolmogorovTest(h_s_pz_4); 
+	Double_t ks5 = h_s_pz->KolmogorovTest(h_s_pz_5); 
+	Double_t ks6 = h_s_pz->KolmogorovTest(h_s_pz_6); 
+	Double_t ks7 = h_s_pz->KolmogorovTest(h_s_pz_7);
+	Double_t ks8 = h_s_pz->KolmogorovTest(h_s_pz_8);
+	Double_t ks9 = h_s_pz->KolmogorovTest(h_s_pz_9);
+
+    printf("KolmogorovTest = %f , 10e6 vs 10k events\n",ks3);
+    printf("KolmogorovTest = %f , 10e6 vs 1k events\n",ks2);
+    printf("KolmogorovTest = %f , 10e6 vs 500 events\n",ks4);
+    printf("KolmogorovTest = %f , 10e6 vs 400 events\n",ks9);
+    printf("KolmogorovTest = %f , 10e6 vs 300 events\n",ks6);
+    printf("KolmogorovTest = %f , 10e6 vs 200 events\n",ks7);    
+    printf("KolmogorovTest = %f , 10e6 vs 150 events\n",ks8); 
+    printf("KolmogorovTest = %f , 10e6 vs 100 events\n",ks5);
+
+*/
+
+}
+
+
+
+
+
+
+

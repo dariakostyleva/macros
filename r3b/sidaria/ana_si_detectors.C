@@ -47,13 +47,14 @@ void ana_si_detectors(){
     //DEFINE THE INPUT FILE  --------------------------------------------------
     //TString filename = "sim_out_1m.root";
     //TString filename = "/data.local2/G4_sim_momenta/sim_out_1m.root";
-    TString filename = "sim_out.root";
+    TString filename = "sim_out_10k.root";
     TFile *file0 = TFile::Open(filename);
     TTree* Tree0 = (TTree*)file0->Get("evt");
     Long64_t nevents = Tree0->GetEntries();
     std::cout<<"Number of entries: "<<nevents<<std::endl;
 
-    TFile * out_hist = new TFile("out_hist.root","RECREATE");
+    TFile * out_hist = new TFile("out_hist_10k.root","RECREATE");
+    //TFile * out_hist = new TFile("out_hist_1m.root","RECREATE");
 
     //HISTOGRAMS DEFINITION
     TH1F* h1_T = new TH1F("h1_T","Primary PDG Code",1000,0,400000);
@@ -62,7 +63,8 @@ void ana_si_detectors(){
     TH1F* h4_T = new TH1F("h4_T","Primary Phi",200,-3.2,3.2);
 
     //momenta
-    TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",500,35.76,36.05);
+ //   TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",500,35.76,36.05);
+    TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",150,35.6,36.2);
     TH1F* h_p_pz = new TH1F("h_p_pz","Longitudinal momentum of proton (GeV/c)",500,1.1,1.4);
     TH1F* h_s_pt = new TH1F("h_s_pt","Transverse momentum of HI (GeV/c)",500,0.0,0.08);
     TH1F* h_p_pt = new TH1F("h_p_pt","Transverse momentum of proton (GeV/c)",500,0.0,0.08);
@@ -86,7 +88,7 @@ void ana_si_detectors(){
     TH1F* h_s_de = new TH1F("h_s_de","Energy loss of 29S (GeV)",500,0.0,0.001);
     TH1F* h_p_de = new TH1F("h_p_de","Energy loss of proton (GeV)",500,0.0,0.001);
 
-    TH1F* h_qval = new TH1F("h_qval","Q-value (GeV)",500,0.001,0.003);
+    TH1F* h_qval = new TH1F("h_qval","Q-value (GeV)",500,0.0001,0.003);
     TH1F* h_qval1 = new TH1F("h_qval1","Q-value (GeV)",500,0.001,0.003);
     //Monte-Carlo Track (input)
     TClonesArray* MCTrackCA;  
@@ -115,6 +117,7 @@ void ana_si_detectors(){
     Double_t cos_ang, ang_p1S;
     Double_t s_pz, p_pz, p_pt, s_pt, s_px, s_py, p_px, p_py;
     Double_t det01, dist01, de_p, de_s;
+    Double_t s_pz_max = 35.9, s_pz_min = 35.9;
     
 
     //***** Values for cheking qvalue reproducement, taken from asciigenerator *******//
@@ -190,6 +193,9 @@ void ana_si_detectors(){
               de_s = Tra[h]->GetEloss();
              // printf("de_s = %f\n",de_s);
             //  cout << "Detector " << Tra[h]->GetDetCopyID() << endl;
+              if(s_pz > s_pz_max) s_pz_max = s_pz;
+              if(s_pz < s_pz_min && s_pz > 0.) s_pz_min = s_pz;
+             // printf("pz is %f, pz max is %f, pz min is %f\n",s_pz, s_pz_max,s_pz_min);
            }
            //******* proton ****************
            if(Tra[h]->GetPdi()==2212 && Tra[h]->GetDetCopyID()==1){
@@ -278,6 +284,9 @@ void ana_si_detectors(){
         h_corr->Fill(xaxis->GetBinCenter(i),ang_momz->GetBinContent(i,j));
       }
     }
+    printf("pz max is %f, pz min is %f\n",s_pz_max,s_pz_min);
+    printf("delta p of HI = %f GeV/c \n",s_pz_max-s_pz_min);
+    printf("FRS acceptance = %f\n",h_s_pz->GetMean()/100*2); // FRS acceptance is 2%
 
 
     //MC TRACK CANVAS
