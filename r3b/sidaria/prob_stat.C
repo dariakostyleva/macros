@@ -4,55 +4,55 @@
 #include "TF1.h"
 
 void prob_stat(){
-	TFile * f = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_1m.root","READ");
+	TFile * f = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_1m.root","READ");
     TH1F * h_s_pz = (TH1F*)f->Get("h_s_pz");
 
-    TFile * f2 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_1k.root","READ");
+    TFile * f2 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_1k.root","READ");
 	TH1F * h_s_pz_2 = (TH1F*)f2->Get("h_s_pz");
 
-	TFile * f3 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_2k.root","READ");
+	TFile * f3 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_2k.root","READ");
 	TH1F * h_s_pz_3 = (TH1F*)f3->Get("h_s_pz");
 
-	TFile * f4 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_700ev.root","READ");
+	TFile * f4 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_700ev.root","READ");
 	TH1F * h_s_pz_4 = (TH1F*)f4->Get("h_s_pz");
 
-	TFile * f5 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_100ev.root","READ");
+	TFile * f5 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_100ev.root","READ");
 	TH1F * h_s_pz_5 = (TH1F*)f5->Get("h_s_pz");
 
-	TFile * f6 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_300ev.root","READ");
+	TFile * f6 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_300ev.root","READ");
 	TH1F * h_s_pz_6 = (TH1F*)f6->Get("h_s_pz");
 
-	TFile * f7 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_200ev.root","READ");
+	TFile * f7 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_200ev.root","READ");
 	TH1F * h_s_pz_7 = (TH1F*)f7->Get("h_s_pz");
 
-	TFile * f8 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_150ev.root","READ");
+	TFile * f8 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_150ev.root","READ");
 	TH1F * h_s_pz_8 = (TH1F*)f8->Get("h_s_pz");
 
-	TFile * f9 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_400ev.root","READ");
+	TFile * f9 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_400ev.root","READ");
 	TH1F * h_s_pz_9 = (TH1F*)f9->Get("h_s_pz");
 
-    TFile * f10 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_250ev.root","READ");
+    TFile * f10 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_250ev.root","READ");
     TH1F * h_s_pz_10 = (TH1F*)f10->Get("h_s_pz");
 
-    TFile * f11 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_180ev.root","READ");
+    TFile * f11 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_180ev.root","READ");
     TH1F * h_s_pz_11 = (TH1F*)f11->Get("h_s_pz");
 
-    TFile * f12 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_220ev.root","READ");
+    TFile * f12 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_220ev.root","READ");
     TH1F * h_s_pz_12 = (TH1F*)f12->Get("h_s_pz");
 
-    TFile * f13 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_210ev.root","READ");
+    TFile * f13 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_210ev.root","READ");
     TH1F * h_s_pz_13 = (TH1F*)f13->Get("h_s_pz");
 
-    TFile * f14 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_10ev.root","READ");
+    TFile * f14 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_10ev.root","READ");
     TH1F * h_s_pz_14 = (TH1F*)f14->Get("h_s_pz");
 
-    TFile * f15 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_80ev.root","READ");
+    TFile * f15 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_80ev.root","READ");
     TH1F * h_s_pz_15 = (TH1F*)f15->Get("h_s_pz");
 
-    TFile * f16 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_20ev.root","READ");
+    TFile * f16 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_20ev.root","READ");
     TH1F * h_s_pz_16 = (TH1F*)f16->Get("h_s_pz");
 
-    TFile * f17 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_50ev.root","READ");
+    TFile * f17 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_50ev.root","READ");
     TH1F * h_s_pz_17 = (TH1F*)f17->Get("h_s_pz");
 
     TCanvas * c1 = new TCanvas();

@@ -18,7 +18,7 @@ void qval_mom(){
 	graph->SetMarkerColor(kBlack);
 	graph->SetLineColor(kBlue);
 	graph->GetXaxis()->SetTitle("Qvalue [GeV]");
-  	graph->GetYaxis()->SetTitle("Longitudinal momentum of HI) [GeV/c]");
+  	graph->GetYaxis()->SetTitle("Delta longitudinal momentum of HI) [GeV/c]");
 
   	
   	// sqare root func to fit graph
@@ -33,7 +33,7 @@ void qval_mom(){
   	
   	mycanvas->cd(2);
   	//long mom histo from file and rect fit to it
-    TFile * f = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_1m.root","READ");
+    TFile * f = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/root_with_hist/out_hist_1m.root","READ");
     TH1F * h_s_pz = (TH1F*)f->Get("h_s_pz");
     TF1 * rect = new TF1("rect", "(x>35.800137 && x<36.000565)*[0] ", 35.6,36.2);
     h_s_pz->Fit("rect");
