@@ -26,7 +26,7 @@ void qval_mom(){
   	graph->Fit("xsq");
   	graph->Draw("AP");
   	//line to show FRS acceptance
-  	TLine *acc = new TLine(0,0.717706,0.029,0.717706);
+  	TLine *acc = new TLine(0,0.358881,0.029,0.358881);
   	acc->SetLineWidth(4);
   	acc->SetLineColor(kBlue);
   	acc->Draw("same");
@@ -44,7 +44,6 @@ void qval_mom(){
    // std::cout<<"height = "<<rect->GetParameter(0)<<std::endl;
     Double_t half_height = rect->GetParameter(0)/2;
     printf("FWHM of rect fit = %f\n", half_height);
-
     TF1 * mid = new TF1("mid","3.871425",30,40); 
 	//mid->Draw("same");
 
@@ -55,6 +54,13 @@ void qval_mom(){
     TCanvas* mycanvas2 = new TCanvas("mycanvas2","mycanvas2",1300,0, 1000,1000);
     graph->Draw("AP");
     acc->Draw("same");
+
+    TLegend *l = new TLegend(0.1,0.7,0.48,0.9);
+    //legend->SetHeader("","C");         // option "C" allows to center the header
+    l->AddEntry(graph,"data points","lp");
+    l->AddEntry(acc,"FRS acceptance, mean of long mom +-1%","l");
+    l->AddEntry(xsq,"Sqare root fit","l");
+    l->Draw("same");
 /*
  
 	TFile * f2 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_1k.root","READ");

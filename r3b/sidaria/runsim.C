@@ -16,6 +16,7 @@ void runsim(Int_t nEvents = 0)
   TString fEventFile = "evt_gen3.dat";           // Input event file in the case of ascii generator
 //  TString fGenerator = "box";        // Event generator type: box, gammas, r3b, ion, ascii
 //  TString fEventFile = "";           // Input event file in the case of ascii generator
+  Int_t randomSeed = 0; // 0 for time-dependent random numbers, 335566 for time-independent
 
 
   // ---------------  Detector selection: true - false -------------------------------
@@ -130,6 +131,10 @@ void runsim(Int_t nEvents = 0)
 
 
   // -----   Initialize simulation run   ------------------------------------
+
+  TRandom3 random(randomSeed);
+  gRandom = &random;
+  //TVirtualMC::GetMC()->SetRandom(new TRandom3(randomSeed));
   run->Init();
 
   // -----   Runtime database   ---------------------------------------------

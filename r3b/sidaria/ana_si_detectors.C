@@ -3,17 +3,13 @@
 //
 //   -- General macro for the analysis of radioactive decays using silicon detectors
 //      Author: Jose Luis Rodriguez Sanchez, Daria Kostyleva
-//      Last Update: 05/03/19
+//      Last Update: 12/07/19
 //      Comments: tracking in-flight decay products (30Cl->29S+p for instanse) using 
 //      silicon microstrip AMS detectors
-//	         
-//	
+	
 //  ---------------------------------------------------------------------------------
-//
 //   Usage: 
 //      > root -l ana_si_detectors.C
-//	         
-//	
 //  ---------------------------------------------------------------------------------
 
 
@@ -45,15 +41,16 @@ void ana_si_detectors(){
     gStyle->SetOptFit(0);
 
     //DEFINE THE INPUT FILE  --------------------------------------------------
-    //TString filename = "sim_out_1m.root";
-    //TString filename = "/data.local2/G4_sim_momenta/sim_out_1m.root";
-    TString filename = "sim_out.root";
-    TFile *file0 = TFile::Open(filename);
+
+    //TString file_in = "/data.local2/G4_sim_momenta/sim_out_500k_110719.root";
+    TString file_in = "./sim_out.root";
+    TFile *file0 = TFile::Open(file_in);
     TTree* Tree0 = (TTree*)file0->Get("evt");
     Long64_t nevents = Tree0->GetEntries();
     std::cout<<"Number of entries: "<<nevents<<std::endl;
 
-    TFile * out_hist = new TFile("out_hist.root","RECREATE");
+    TString file_hist_out = "out_hist.root";
+    TFile * out_hist = new TFile(file_hist_out,"RECREATE");
     //TFile * out_hist = new TFile("out_hist_1m.root","RECREATE");
 
     //HISTOGRAMS DEFINITION
@@ -142,10 +139,14 @@ void ana_si_detectors(){
     Double_t s_pz_1_ecorr, p_pz_1_ecorr, q_pcm_s_ecorr, q_pcm_p_ecorr, pcm_s_ecorr, pcm_p_ecorr;
     Double_t pcm_s_frs = 0., q_pcm_s_frs = 0.,pcm_s_frs1 = 0., q_pcm_s_frs1 = 0.  ;
       //******* Defining angles for isotropic distribution ************
-    Double_t costheta = 2.*gRandom->Uniform(0,1)-1.0;
-    Double_t sintheta = std::sqrt((1.0 - costheta)*(1.0 + costheta));
-    Double_t phi  = 2*TMath::Pi()*gRandom->Uniform(0,1);
+    //Double_t costheta = 2.*gRandom->Uniform(0,1)-1.0;
+    //Double_t sintheta = std::sqrt((1.0 - costheta)*(1.0 + costheta));
+    //Double_t phi  = 2*TMath::Pi()*gRandom->Uniform(0,1);
 
+    //****** Conditions on the event selection *****
+    Double_t min_angle = 2.0;   // minimum angle between trajectories is 2 mrad
+    Double_t same_strip = 0.03; // minimum distance 300mum between coordinates of hi and p, if less than they hit the same strip 
+    Double_t max_dist = 0.018;  // maximum distance between trajectories 180 mum, if greater hi and p don't come from the same mother
 
     //************* MAIN LOOP OVER EVENTS *************************************
     //for(Int_t i=0;i<100;i++){
@@ -243,16 +244,16 @@ void ana_si_detectors(){
        // cos of angles = scalar product/their lengths
        cos_ang = (x[0][0]*x[1][0] + y[0][0]*y[1][0] + z[0][0]*z[1][0])/(rad[0]*rad[1]);
        ang_p1S = acos(cos_ang)*1000.;
-       if(ang_p1S<2.0) continue;
+       if(ang_p1S < min_angle) continue; //angle less than 2 mrad
        //if decay products fall into the same strip i.e. dead zones
-       if(abs(x[0][0]-x[1][0]) < 0.03) continue;
-       if(abs(y[0][0]-y[1][0]) < 0.03) continue;
+       if(abs(x[0][0]-x[1][0]) < same_strip) continue; //300 mum 
+       if(abs(y[0][0]-y[1][0]) < same_strip) continue;
 
        //minimum distance between tracks, 0 - 29S, 1 - proton should not exceed 180 um
        det01 = (x[0][0]-x[1][0])*(y[0][0]*z[1][0]-y[1][0]*z[0][0]) + (y[0][0]-y[1][0])*(-x[0][0]*z[1][0]+x[1][0]*z[0][0]) + (z[0][0]-z[1][0])*(x[0][0]*y[1][0]-x[1][0]*z[0][0]);
        //det12=(x(1,1)-x(1,2))*(dy(1)*dz(2)-dy(2)*dz(1)) +(y(1,1)-y(1,2))*(-dx(1)*dz(2)+dx(2)*dz(1)) +(z(1,1)-z(1,2))*(dx(1)*dy(2)-dx(2)*dz(1))
        dist01 = abs(det01/(rad[0]*rad[1]*sqrt(1.0-cos_ang*cos_ang)));
-       if(dist01 > 0.018) continue;
+       if(dist01 > max_dist) continue;
        //******************************************************************
 
        //***** cheking q-value reproducement ***********************************************
@@ -355,7 +356,7 @@ void ana_si_detectors(){
     }
     printf("pz max is %f, pz min is %f\n",s_pz_max,s_pz_min);
     printf("delta p of HI = %f GeV/c \n",s_pz_max-s_pz_min);
-    printf("FRS acceptance = %f\n",h_s_pz->GetMean()/100*2); // FRS acceptance is 2%
+    printf("FRS acceptance = %f\n",h_s_pz->GetMean()/100*1); // FRS acceptance is 2% or +-1%
 
 
     //MC TRACK CANVAS
@@ -480,7 +481,7 @@ void ana_si_detectors(){
     h_qval->GetXaxis()->SetTitle("Qvalue calculated via kinetic energies after tracking (MeV)");
     h_qval->GetXaxis()->SetLabelSize(0.05);
     h_qval->GetXaxis()->SetTitleSize(0.05);
-    h_qval1->GetXaxis()->SetTitle("Qvalue calculated via kinetic energies after tracking + energu losses of HI and p (MeV)");
+    h_qval1->GetXaxis()->SetTitle("Qvalue calculated via kinetic energies after tracking (MeV)");
     h_qval1->GetXaxis()->SetLabelSize(0.05);
     h_qval1->GetXaxis()->SetTitleSize(0.05);
     h_qval1->SetLineColor(8);
@@ -523,6 +524,9 @@ void ana_si_detectors(){
     l8_2->Draw("same");
 
     c7->cd(4);
+    h_qval6->GetXaxis()->SetTitle("Qvalue calculated via pcm of HI with diff plab components (MeV)");
+    h_qval6->GetXaxis()->SetLabelSize(0.05);
+    h_qval6->GetXaxis()->SetTitleSize(0.05);
     h_qval6->Draw();
     h_qval6->SetLineColor(6);
     h_qval7->Draw("sames");
