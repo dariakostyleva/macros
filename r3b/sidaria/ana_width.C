@@ -19,13 +19,13 @@
 using namespace std;
 
 
-void ana_width(Int_t iterator = 0, Int_t runnumb = 0, Int_t countum = 0){
+void ana_width(Int_t iterator = 0, Int_t countum = 0, Int_t runnumb = 0, Int_t maxcount = 0){
 
     TString file_in = "sim_out.root";
     TFile *file0 = TFile::Open(file_in);
     TTree* Tree0 = (TTree*)file0->Get("evt");
     Long64_t nevents = Tree0->GetEntries();
-    std::cout<<"Number of entries: "<<nevents<<std::endl;
+    //std::cout<<"Number of entries: "<<nevents<<std::endl;
 
     //HISTOGRAMS DEFINITION
 
@@ -54,11 +54,11 @@ void ana_width(Int_t iterator = 0, Int_t runnumb = 0, Int_t countum = 0){
 
     Double_t s_pz, delta_s_pz;
     Double_t s_pz_max = 35.9, s_pz_min = 35.9;
-    Double_t widths_arr[runnumb]; // runnumb - this many times this script is run 
+    //Double_t widths_arr[runnumb]; // runnumb - this many times this script is run 
 
     //************* MAIN LOOP OVER EVENTS *************************************
     for(Int_t i=0;i<nevents;i++){
-       if(i%10000 == 0) printf("Event:%i\n",i);
+       //if(i%10000 == 0) printf("Event:%i\n",i);
 
        MCTrackCA->Clear();
        TraCA->Clear();
@@ -95,20 +95,21 @@ void ana_width(Int_t iterator = 0, Int_t runnumb = 0, Int_t countum = 0){
 
     }//loop for nevents
     TCanvas *c1 = new TCanvas("long_mom", "Longitudinal momentum of HI",0,0,800,900);
-    h_s_pz->Draw();
+    //h_s_pz->Draw();
 
     delta_s_pz = s_pz_max-s_pz_min;
-    printf("pz max is %f, pz min is %f\n",s_pz_max,s_pz_min);
-    printf("delta p of HI = %f GeV/c \n",delta_s_pz);
+    //printf("pz max is %f, pz min is %f\n",s_pz_max,s_pz_min);
+    //printf("delta p of HI = %f GeV/c \n",delta_s_pz);
 
 
     ofstream myfile;
     myfile.open ("mom_widths.txt",std::ios_base::app);
     if(iterator == 0) myfile << countum << " ";
     myfile << delta_s_pz << " ";
+    if(iterator == runnumb-1) myfile << "\n";
     myfile.close();
-    widths_arr[iterator] = delta_s_pz;
-    printf("Macro finished succesfully.\n");
+    //widths_arr[iterator] = delta_s_pz;
+    printf("Macro ana_width.C finished succesfully.\n");
 
   /*  if(iterator==runnumb){
       //printf("We got: \n");
