@@ -5,31 +5,104 @@
 
 void qval_mom(){
 
-	TCanvas* mycanvas = new TCanvas("mycanvas","mycanvas",1300,0, 1000,1000);
-	mycanvas->Divide(1,3);
-	mycanvas->cd(1);
+  	auto c = new TCanvas("mycanvas1","mycanvas1",0,0,1000,900);
+  	c->Divide(1,2);
 	const int n_points = 21;
-	Double_t q_vals[n_points]={0.0005, 0.001, 0.0015, 0.002, 0.0025, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009, 0.010, 0.012, 0.015, 0.017, 0.019, 0.021, 0.023, 0.025, 0.027 };
-	Double_t mom_vals[n_points]={0.100967, 0.143272, 0.174591, 0.202106, 0.224812, 0.247471, 0.284004, 0.318119, 0.348724, 0.375557, 0.402966, 0.426929, 0.449352, 0.492371, 0.550659, 0.586452, 0.620327, 0.652485,0.685322, 0.712490, 0.740807};
-	TGraph * graph = new TGraph(n_points,q_vals,mom_vals);
-	//graph->SetTitle("qvalue vs delta of momentum");
-	graph->SetMarkerSize(2);
+	Double_t err_p[21];
+	Double_t err_ql[21]; //lower error bar
+	Double_t err_qh[21]; //upper error bar
+	for (auto i=0; i<21; i++){
+		err_p[i] = 0.0;
+		err_ql[i] = 0.0;
+		err_qh[i] = 0.0;
+		//if(i==3) {err_p[i]= 0.0196286;} //this number is error for 10 counts taken from read_mom_width output
+		if(i==3) {err_p[i]= 0.00818744;} //0.00818744 GEV/C !!!!!! for 30 counts
+
+	}
+
+	Double_t q_vals[n_points]={0.0005, 0.001, 0.0015, 0.002, 0.0025, 0.0030, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009, 0.010, 0.012, 0.015, 0.017, 0.019, 0.021, 0.023, 0.025, 0.027};
+	Double_t p_vals[n_points]={0.100967, 0.143272, 0.174591, 0.202106, 0.224812, 0.247471, 0.284004, 0.318119, 0.348724, 0.375557, 0.402966, 0.426929, 0.449352, 0.492371, 0.550659, 0.586452, 0.620327, 0.652485,0.685322, 0.712490, 0.740807};
+	TGraph * graph = new TGraphErrors(n_points,q_vals,p_vals,0,&err_p[0]);
+	graph->SetTitle("Longitudinal momentum range (measured by FRS/SFRS) in dependence of decay energy");
+	//graph->SetTitleSize(1.);
+	graph->SetMarkerSize(1.0);
 	graph->SetMarkerStyle(kFullCircle);
 	graph->SetMarkerColor(kBlack);
 	graph->SetLineColor(kBlue);
 	graph->GetXaxis()->SetTitle("Qvalue [GeV]");
-  	graph->GetYaxis()->SetTitle("Delta longitudinal momentum of HI) [GeV/c]");
-
+  	graph->GetYaxis()->SetTitle("Range of longitudinal momentum of HI [GeV/c]");
   	
   	// sqare root func to fit graph
   	TF1 *xsq = new TF1("xsq","[0]*sqrt(x)",0,10);
-  	graph->Fit("xsq");
-  	graph->Draw("AP");
+  	graph->Fit("xsq","","",0.0,10.0);
+  	Double_t p0 = xsq->GetParameter(0); //fit parameter for square function
+  	err_qh[3] = ((p_vals[3] + err_p[3])/p0)*((p_vals[3] + err_p[3])/p0) - q_vals[3];
+	err_ql[3] = -((p_vals[3] - err_p[3])/p0)*((p_vals[3] - err_p[3])/p0) + q_vals[3];
+	cout << "err_qh[3] = " << err_qh[3] << " GeV "<< endl;
+	cout << "err_ql[3] = " << err_ql[3] << " GeV "<< endl;
+  	//getting the qvalue error out dependent on momentum systematics error
+
+
   	//line to show FRS acceptance
-  	TLine *acc = new TLine(0,0.358881,0.029,0.358881);
+  	TLine *acc = new TLine(0,0.358881,6.0,0.358881);
   	acc->SetLineWidth(4);
   	acc->SetLineColor(kBlue);
-  	acc->Draw("same");
+
+  	TLine *acc2 = new TLine(0,0.897532,10.0,0.897532);
+  	acc2->SetLineWidth(4);
+  	acc2->SetLineColor(kGreen);
+
+    //graph->GetXaxis()->SetLimits(0.0,45.0);
+    graph->GetXaxis()->SetLimits(0.0,0.006);
+    graph->GetYaxis()->SetRangeUser(0.0,0.40);
+    c->cd(1);
+    graph->Draw("AP");
+    acc->Draw("same");
+    acc2->Draw("same");
+    c->Update();
+
+    TLegend *l = new TLegend(0.1,0.7,0.48,0.9);
+    //legend->SetHeader("","C");         // option "C" allows to center the header
+    l->AddEntry(graph,"data points","lp");
+    l->AddEntry(acc,"FRS acceptance, mean of long mom +-1%","l");
+    l->AddEntry(acc2,"Super-FRS acceptance, mean of long mom +-2.5%","l");
+    l->AddEntry(xsq,"Sqare root fit","l");
+    l->Draw("same");
+
+    TPaveText *pt = new TPaveText(27.34719,0.4730493,43.86147,0.6732546,"br");
+    pt->AddText("Reaction: 30Cl -> 29S + p");
+    pt->AddText("Ekin(30Cl) = 18.54 GeV");
+    pt->AddText("Reference decay energy = 2 MeV");
+    pt->Draw("same");
+
+  	auto c2 = new TCanvas("mycanvas2","mycanvas2",0,0,1000,900);
+  	auto * graph_asym = new TGraphAsymmErrors(n_points,q_vals,p_vals,&err_ql[0],&err_qh[0],&err_p[0],&err_p[0]);
+    graph_asym->SetTitle("Zoomed graph with calculated errors on qvalue");
+    graph_asym->GetXaxis()->SetTitle("Qvalue [GeV]");
+  	graph_asym->GetYaxis()->SetTitle("Range of longitudinal momentum of HI [GeV/c]");
+    graph_asym->SetMarkerColor(kBlack);
+    graph_asym->SetMarkerSize(2);
+    graph_asym->SetFillColor(kGreen);
+    graph_asym->SetFillStyle(3001);
+	graph_asym->SetMarkerStyle(kFullCircle);
+    graph_asym->GetXaxis()->SetLimits(0.001,0.003);
+    graph_asym->GetYaxis()->SetRangeUser(0.15,0.25);
+    graph_asym->Draw("a2");
+    graph_asym->Draw("p");
+    xsq->Draw("same");
+
+    TLegend *l2 = new TLegend(0.1,0.7,0.48,0.9);
+    //legend->SetHeader("","C");         // option "C" allows to center the header
+    l2->AddEntry(graph_asym,"data points","lp");
+    l2->AddEntry(xsq,"Sqare root fit","l");
+    l2->Draw("same");
+
+/*
+  	TCanvas* mycanvas = new TCanvas("mycanvas","mycanvas",1300,0, 1000,1000);
+	mycanvas->Divide(1,3);
+	mycanvas->cd(1);
+	graph->Draw("ACP");
+
   	
   	mycanvas->cd(2);
   	//long mom histo from file and rect fit to it
@@ -50,17 +123,10 @@ void qval_mom(){
     mycanvas->cd(3);
     rect_hist->SetFillColor(kBlue);
     rect_hist->Draw("bar");
+*/
 
-    TCanvas* mycanvas2 = new TCanvas("mycanvas2","mycanvas2",1300,0, 1000,1000);
-    graph->Draw("AP");
-    acc->Draw("same");
 
-    TLegend *l = new TLegend(0.1,0.7,0.48,0.9);
-    //legend->SetHeader("","C");         // option "C" allows to center the header
-    l->AddEntry(graph,"data points","lp");
-    l->AddEntry(acc,"FRS acceptance, mean of long mom +-1%","l");
-    l->AddEntry(xsq,"Sqare root fit","l");
-    l->Draw("same");
+
 /*
  
 	TFile * f2 = new TFile("/u/dkostyl/R3BRoot/macros/r3b/sidaria/out_hist_1k.root","READ");

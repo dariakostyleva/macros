@@ -7,7 +7,9 @@
 #  into some file
 #  That's it
 #  ---------------------------------------------------------------------------------------------------------
-
+start=$SECONDS
+# VERY IMPORTANT to delete .txt file here, because otherwise it will continue writing in it
+rm mom_widths.txt
 # number of events from which we want to start
 stacount=$1
 # max number of events up to which we want to go
@@ -26,11 +28,11 @@ fi
 
 # below I run nested loop: for each number of counts the simulation and then analysis script are run runnumb times
 echo '    '
-for (( k=$stacount ; k<=$maxcount ; k++ ))
-#for k in $(seq $stacount $maxcount)
+#for (( k=$stacount ; k<=$maxcount ; k++ ))
+#I want to go with larger step 
+for (( k=$stacount ; k<=$maxcount ; k+=10 ))
   do
   for (( i=0; i<$runnumb ; i++ ))
- # for i in $(seq 0 $runnumb-1)
     do 
   	  echo 'Iteration' $i 'for' $k 'counts'
       root -l <<EOF
@@ -45,7 +47,9 @@ EOF
   echo $runnumb 'iterations over' $k 'counts are over!'
   echo '    '
   done
-echo 'Output in mom_widths.txt. Please delete the previous version!'
+echo 'Output in mom_widths.txt!'
+duration=$(( SECONDS - start ))
+echo 'It took' $duration 'sec or' $(($duration/3600)) 'hours'
 
 #syntax to comment whole block
 : <<'END'

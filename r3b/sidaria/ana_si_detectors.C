@@ -42,8 +42,8 @@ void ana_si_detectors(){
 
     //DEFINE THE INPUT FILE  --------------------------------------------------
 
-    //TString file_in = "/data.local2/G4_sim_momenta/sim_out_500k_110719.root";
-    TString file_in = "./sim_out.root";
+    TString file_in = "/data.local2/G4_sim_momenta/sim_out_500k_110719.root";
+    //TString file_in = "./sim_out.root";
     TFile *file0 = TFile::Open(file_in);
     TTree* Tree0 = (TTree*)file0->Get("evt");
     Long64_t nevents = Tree0->GetEntries();
@@ -62,7 +62,7 @@ void ana_si_detectors(){
     TH1F* h_p_pt = new TH1F("h_p_pt","Transverse momentum of proton (GeV/c)",500,0.0,0.08);
     TH1F* h_s_px = new TH1F("h_s_px","Px of HI (GeV/c)",500,-0.1,0.1);
     TH1F* h_p_px = new TH1F("h_p_px","Px of proton (GeV/c)",500,-0.1,0.1);
-    TH1F* ang_s_p = new TH1F("ang_s_p","Angle between 29S and proton (mrad)",500,40,55);
+    TH1F* ang_s_p = new TH1F("ang_s_p","Angle between 29S and proton (mrad)",1000,47,51);
     TH1F* ang_s_p_cut = new TH1F("ang_s_p_cut","Angle between 29S and proton (mrad) with selecton on pz s",500,40,55);
     TH2F* ang_momz = new TH2F("ang_momz","Correlation between long mom of HI and angle HI-p",500,35.76,36.05,500,0,55);
     TH2F* ang_momt = new TH2F("ang_momt","Correlation between transv mom of HI and angle HI-p",500,0.0,0.08,500,0,55);
@@ -90,6 +90,8 @@ void ana_si_detectors(){
     TH1F* h_qval5 = new TH1F("h_qval5","Q-value via HI pcm (MeV)",500,1.8,2.2);
     TH1F* h_qval6 = new TH1F("h_qval6","Q-value via HI pcm at FRS (MeV)",500,-0.1,3.);
     TH1F* h_qval7 = new TH1F("h_qval7","Q-value via HI pcm at FRS (MeV)",500,-0.1,3.);
+    TH1F* h_qval8 = new TH1F("h_qval8","Q-value via proton pcm at FRS (MeV)",500,-0.1,3.);
+    TH1F* h_qval9 = new TH1F("h_qval9","Q-value via proton pcm at FRS (MeV)",500,-0.1,3.);
 
     //Monte-Carlo Track (input)
     TClonesArray* MCTrackCA;  
@@ -115,7 +117,7 @@ void ana_si_detectors(){
     //***** Variables for tracking ********
     Double_t x[2][4], y[2][4], z[2][4]; //1st index - particle (0 - 29S, 1 - proton), 2nd - detector number (there are 4 silicons)
     Double_t dx[2], dy[2], dz[2], rad[2];
-    Double_t cos_ang, ang_p1S;
+    Double_t cos_ang, ang_p1S, ang_p1S_max = 0.0;
     Double_t s_pz, p_pz, p_pt, s_pt, s_px, s_py, p_px, p_py;
     Double_t det01, dist01, de_p = 0., de_s = 0.;
     Double_t s_pz_max = 35.9, s_pz_min = 35.9;
@@ -138,6 +140,7 @@ void ana_si_detectors(){
     Double_t s_pz_1, p_pz_1; //momenta components of hi and p for reverce lorenty boost
     Double_t s_pz_1_ecorr, p_pz_1_ecorr, q_pcm_s_ecorr, q_pcm_p_ecorr, pcm_s_ecorr, pcm_p_ecorr;
     Double_t pcm_s_frs = 0., q_pcm_s_frs = 0.,pcm_s_frs1 = 0., q_pcm_s_frs1 = 0.  ;
+    Double_t pcm_p_frs = 0., q_pcm_p_frs = 0.,pcm_p_frs1 = 0., q_pcm_p_frs1 = 0.  ;
       //******* Defining angles for isotropic distribution ************
     //Double_t costheta = 2.*gRandom->Uniform(0,1)-1.0;
     //Double_t sintheta = std::sqrt((1.0 - costheta)*(1.0 + costheta));
@@ -244,6 +247,8 @@ void ana_si_detectors(){
        // cos of angles = scalar product/their lengths
        cos_ang = (x[0][0]*x[1][0] + y[0][0]*y[1][0] + z[0][0]*z[1][0])/(rad[0]*rad[1]);
        ang_p1S = acos(cos_ang)*1000.;
+       if(ang_p1S > ang_p1S_max) ang_p1S_max = ang_p1S;
+
        if(ang_p1S < min_angle) continue; //angle less than 2 mrad
        //if decay products fall into the same strip i.e. dead zones
        if(abs(x[0][0]-x[1][0]) < same_strip) continue; //300 mum 
@@ -297,11 +302,21 @@ void ana_si_detectors(){
        //cout << "s_pz_1 " << s_pz_1 << endl;
        //cout << "p_pz_1 " << p_pz_1 << endl;
        //pcm_s_frs = s_pz_1/costheta;
+       //****** HI ***************
        pcm_s_frs = sqrt(s_pz_1*s_pz_1);
        pcm_s_frs1 = sqrt(s_px*s_px + s_py*s_py);
+       //****** Proton *************
+       pcm_p_frs = sqrt(p_pz_1*p_pz_1);
+       pcm_p_frs1 = sqrt(p_px*p_px + p_py*p_py);
        //cout << "pcm_s_frs  " << pcm_s_frs  << endl;
+
+       //****** HI ***************
        q_pcm_s_frs = 4*Mmom*Mmom*pcm_s_frs*pcm_s_frs/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
        q_pcm_s_frs1 = 4*Mmom*Mmom*pcm_s_frs1*pcm_s_frs1/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
+
+       //****** Proton *************
+       q_pcm_p_frs = 4*Mmom*Mmom*pcm_p_frs*pcm_p_frs/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
+       q_pcm_p_frs1 = 4*Mmom*Mmom*pcm_p_frs1*pcm_p_frs1/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
        //**********************************************************************************
 
 
@@ -334,10 +349,13 @@ void ana_si_detectors(){
        h_qval5->Fill(q_pcm_s_ecorr*1000);
        h_qval6->Fill(q_pcm_s_frs*1000);
        h_qval7->Fill(q_pcm_s_frs1*1000);
+       h_qval8->Fill(q_pcm_p_frs*1000);
+       h_qval9->Fill(q_pcm_p_frs1*1000);
        h_s_en->Fill(e_hi_lab);
        h_p_en->Fill(e_p_lab);
        h_s_kin->Fill(e_hi_lab - Mhi);
        h_p_kin->Fill(e_p_lab - Mp);
+
 
        //******************************************************************
        //cout << "Num of prim "<<primary << endl;
@@ -354,9 +372,11 @@ void ana_si_detectors(){
         h_corr->Fill(xaxis->GetBinCenter(i),ang_momz->GetBinContent(i,j));
       }
     }
-    printf("pz max is %f, pz min is %f\n",s_pz_max,s_pz_min);
+    printf("max angle betweeen HI and protons is %f mrad \n", ang_p1S_max);
+    printf("pz max is %f GeV/c, pz min is %f GeV/c \n",s_pz_max,s_pz_min);
     printf("delta p of HI = %f GeV/c \n",s_pz_max-s_pz_min);
     printf("FRS acceptance = %f\n",h_s_pz->GetMean()/100*1); // FRS acceptance is 2% or +-1%
+    printf("Super-FRS acceptance = %f\n",h_s_pz->GetMean()/100*2.5); // +-2.5%
 
 
     //MC TRACK CANVAS
@@ -476,7 +496,7 @@ void ana_si_detectors(){
 
     TCanvas * c7 = new TCanvas("qvalues", "Decay energies calculated differently",900,900,800,900);
     gStyle->SetOptFit();
-    c7->Divide(1,4);
+    c7->Divide(1,5);
     c7->cd(1);
     h_qval->GetXaxis()->SetTitle("Qvalue calculated via kinetic energies after tracking (MeV)");
     h_qval->GetXaxis()->SetLabelSize(0.05);
@@ -538,6 +558,16 @@ void ana_si_detectors(){
     //l7->AddEntry("gaus", "Gaussian fit", "l");
     l7->Draw("same");
     //c7->SaveAs("canvas_with_qvalue.root");
+
+    c7->cd(5);
+    h_qval8->GetXaxis()->SetTitle("Qvalue calculated via pcm of proton with diff plab components (MeV)");
+    h_qval8->GetXaxis()->SetLabelSize(0.05);
+    h_qval8->GetXaxis()->SetTitleSize(0.05);
+    h_qval8->Draw();
+    h_qval8->SetLineColor(6);
+    h_qval9->Draw("sames");
+   // h_qval9->Fit("gaus","","", 1.95, 2.1);
+   // TLegend *l7 = new TLegend(0.1,0.7,0.48,0.9);
 
 
     // writing histograms into root file 

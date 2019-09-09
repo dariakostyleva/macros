@@ -56,32 +56,32 @@ void prob_stat(){
     TH1F * h_s_pz_17 = (TH1F*)f17->Get("h_s_pz");
 
     TCanvas * c1 = new TCanvas();
-    c1->Divide(1,8);
+    c1->Divide(1,2);
     c1->cd(1);
     h_s_pz->Draw();
 
+   // c1->cd(2);
+   // h_s_pz_9->Draw();
+
+    //c1->cd(3);
+   // h_s_pz_6->Draw();
+
+   // c1->cd(4);
+   // h_s_pz_10->Draw();
+
+   // c1->cd(5);
+   // h_s_pz_12->Draw();
+
+   // c1->cd(6);
+   // h_s_pz_7->Draw();
+
+   // c1->cd(7);
+   // h_s_pz_8->Draw();
+
+   // c1->cd(8);
+   // h_s_pz_5->Draw();
+
     c1->cd(2);
-    h_s_pz_9->Draw();
-
-    c1->cd(3);
-    h_s_pz_6->Draw();
-
-    c1->cd(4);
-    h_s_pz_10->Draw();
-
-    c1->cd(5);
-    h_s_pz_12->Draw();
-
-    c1->cd(6);
-    h_s_pz_7->Draw();
-
-    c1->cd(7);
-    h_s_pz_8->Draw();
-
-    c1->cd(8);
-    h_s_pz_5->Draw();
-
-    c1->cd(8);
     h_s_pz_15->Draw();
 
     Double_t ks2 = h_s_pz->KolmogorovTest(h_s_pz_2); 

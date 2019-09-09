@@ -94,7 +94,7 @@ void ana_width(Int_t iterator = 0, Int_t countum = 0, Int_t runnumb = 0, Int_t m
        if(traPerEvent>0)         delete[] Tra;
 
     }//loop for nevents
-    TCanvas *c1 = new TCanvas("long_mom", "Longitudinal momentum of HI",0,0,800,900);
+    //TCanvas *c1 = new TCanvas("long_mom", "Longitudinal momentum of HI",0,0,800,900);
     //h_s_pz->Draw();
 
     delta_s_pz = s_pz_max-s_pz_min;
