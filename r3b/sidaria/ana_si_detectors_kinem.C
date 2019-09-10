@@ -25,7 +25,7 @@
 using namespace std;
 
 
-void ana_si_detectors(){
+void ana_si_detectors_kinem(){
 
     // -----   Timer   --------------------------------------------------------
     TStopwatch timer;
@@ -42,14 +42,15 @@ void ana_si_detectors(){
 
     //DEFINE THE INPUT FILE  --------------------------------------------------
 
-    TString file_in = "/data.local2/G4_sim_momenta/sim_out_500k_110719.root";
+    //TString file_in = "/data.local2/G4_sim_momenta/sim_out_500k_110719.root";
     //TString file_in = "./sim_out.root";
+    TString file_in = "./sim_out_kinem.root";
     TFile *file0 = TFile::Open(file_in);
     TTree* Tree0 = (TTree*)file0->Get("evt");
     Long64_t nevents = Tree0->GetEntries();
     std::cout<<"Number of entries: "<<nevents<<std::endl;
 
-    TString file_hist_out = "out_hist.root";
+    TString file_hist_out = "./root_with_hist_kinem/out_hist.root";
     TFile * out_hist = new TFile(file_hist_out,"RECREATE");
     //TFile * out_hist = new TFile("out_hist_1m.root","RECREATE");
 
@@ -154,6 +155,7 @@ void ana_si_detectors(){
     //************* MAIN LOOP OVER EVENTS *************************************
     //for(Int_t i=0;i<100;i++){
     for(Int_t i=0;i<nevents;i++){
+       cout << "Event " << i << endl;
        if(i%10000 == 0) printf("Event:%i\n",i);
 
        MCTrackCA->Clear();
@@ -201,6 +203,8 @@ void ana_si_detectors(){
 
        // *************** LOOP over tracks per event! ****************************************
        // *************** GetDetCopyID() - detector number, 1,2,3 or 4
+       // here we always (almost) have 8 tracks per events because our 2 particles pass trough all 4 detectors 2x4=8
+       // in kinematic case I know that I generate 2 particles and thus I don't look for coincidences
        for(Int_t h=0;h<traPerEvent;h++){          
            //******* 29S *******************
            if(Tra[h]->GetPdi()==1000160290 && Tra[h]->GetDetCopyID()==1){
@@ -234,8 +238,9 @@ void ana_si_detectors(){
               e_p_lab = sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz + Mp*Mp);     
               //printf("e_p_lab = %f\n",e_p_lab);       
             }
-              
        }//for tracker
+
+       cout << "Tracks per event " << traPerEvent << endl;
        // ************** END OF LOOP over tracks per event ************************************
 
        //*********** Calculation of the angles between tracks *************

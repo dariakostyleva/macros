@@ -1,4 +1,4 @@
-void eventdisplay()
+void eventdisplay(TString filename = "")
 {
   FairRunAna *fRun = new FairRunAna();
   
@@ -8,7 +8,7 @@ void eventdisplay()
   rtdb->setFirstInput(parIo1);
   //rtdb->print();
   
-  fRun->SetSource(new FairFileSource("sim_out.root"));
+  fRun->SetSource(new FairFileSource(filename));
   fRun->SetOutputFile("test.root");
   
   R3BEventManager *fMan  = new R3BEventManager();

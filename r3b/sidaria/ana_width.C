@@ -21,7 +21,7 @@ using namespace std;
 
 void ana_width(Int_t iterator = 0, Int_t countum = 0, Int_t runnumb = 0, Int_t maxcount = 0){
 
-    TString file_in = "sim_out.root";
+    TString file_in = "sim_out_kinem.root";
     TFile *file0 = TFile::Open(file_in);
     TTree* Tree0 = (TTree*)file0->Get("evt");
     Long64_t nevents = Tree0->GetEntries();
