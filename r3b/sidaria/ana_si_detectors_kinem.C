@@ -42,15 +42,15 @@ void ana_si_detectors_kinem(){
 
     //DEFINE THE INPUT FILE  --------------------------------------------------
 
-    //TString file_in = "/data.local2/G4_sim_momenta/sim_out_500k_110719.root";
+    TString file_in = "/data.local2/G4_sim_momenta/sim_out_500k_110719.root";
     //TString file_in = "./sim_out.root";
-    TString file_in = "./sim_out_kinem.root";
+    //TString file_in = "./sim_out_kinem.root";
     TFile *file0 = TFile::Open(file_in);
     TTree* Tree0 = (TTree*)file0->Get("evt");
     Long64_t nevents = Tree0->GetEntries();
     std::cout<<"Number of entries: "<<nevents<<std::endl;
 
-    TString file_hist_out = "./root_with_hist_kinem/out_hist.root";
+    TString file_hist_out = "./root_with_hist_kinem/out_hist_newangle_110919.root";
     TFile * out_hist = new TFile(file_hist_out,"RECREATE");
     //TFile * out_hist = new TFile("out_hist_1m.root","RECREATE");
 
@@ -152,10 +152,17 @@ void ana_si_detectors_kinem(){
     Double_t same_strip = 0.03; // minimum distance 300mum between coordinates of hi and p, if less than they hit the same strip 
     Double_t max_dist = 0.018;  // maximum distance between trajectories 180 mum, if greater hi and p don't come from the same mother
 
+    bool hi_1, p_1, hi_2, p_2, hi_3, p_3, hi_4, p_4;  // flags to help looking for coincidences of hi and p in the 1st and 4th detectors 
+
     //************* MAIN LOOP OVER EVENTS *************************************
     //for(Int_t i=0;i<100;i++){
     for(Int_t i=0;i<nevents;i++){
-       cout << "Event " << i << endl;
+       //cout << "Event " << i << endl;
+       hi_1 = false; p_1 = false;  // at the beggining of each event logic is reloaded
+       hi_2 = false; p_2 = false;
+       hi_3 = false; p_3 = false;
+       hi_4 = false; p_4 = false;
+
        if(i%10000 == 0) printf("Event:%i\n",i);
 
        MCTrackCA->Clear();
@@ -208,6 +215,7 @@ void ana_si_detectors_kinem(){
        for(Int_t h=0;h<traPerEvent;h++){          
            //******* 29S *******************
            if(Tra[h]->GetPdi()==1000160290 && Tra[h]->GetDetCopyID()==1){
+              hi_1 = true;
               Tra[h]->MomentumOut(momentum_s);
               s_pt = sqrt(Tra[h]->GetPxOut()*Tra[h]->GetPxOut() + Tra[h]->GetPyOut()*Tra[h]->GetPyOut());
               s_px = Tra[h]->GetPxOut();
@@ -226,6 +234,7 @@ void ana_si_detectors_kinem(){
            }
            //******* proton ****************
            if(Tra[h]->GetPdi()==2212 && Tra[h]->GetDetCopyID()==1){
+            p_1 = true;
               Tra[h]->MomentumOut(momentum_p);
               p_pt = sqrt(Tra[h]->GetPxOut()*Tra[h]->GetPxOut() + Tra[h]->GetPyOut()*Tra[h]->GetPyOut());
               p_pz = Tra[h]->GetPzOut();
@@ -238,19 +247,44 @@ void ana_si_detectors_kinem(){
               e_p_lab = sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz + Mp*Mp);     
               //printf("e_p_lab = %f\n",e_p_lab);       
             }
+            //******* 29S in 4th silicon ****************
+            if(Tra[h]->GetPdi()==1000160290 && Tra[h]->GetDetCopyID()==4) { 
+              hi_4 = true; 
+              x[0][3] = Tra[h]->GetXOut();
+              y[0][3] = Tra[h]->GetYOut();
+              z[0][3] = Tra[h]->GetZOut();
+              //cout << " xyz for 29S in 4th detector " << x[0][3] << " " << y[0][3] << " " << z[0][3] <<endl;
+            }
+
+            //******* proton in 4th silicon ****************
+            if(Tra[h]->GetPdi()==2212 && Tra[h]->GetDetCopyID()==4) { 
+              p_4 = true; 
+              x[1][3] = Tra[h]->GetXOut();
+              y[1][3] = Tra[h]->GetYOut();
+              z[1][3] = Tra[h]->GetZOut(); 
+              //cout << " xyz for proton in 4th detector " << x[1][3] << " " << y[1][3] << " " << z[1][3] <<endl;
+            }
        }//for tracker
 
-       cout << "Tracks per event " << traPerEvent << endl;
        // ************** END OF LOOP over tracks per event ************************************
 
        //*********** Calculation of the angles between tracks *************
-       //*********** For only 1st silicon detector now, i.e. second index 0 ****
+       //*********** between 1st and 4th silicon (second indexes 0 and 3)  ****
 
-       rad[0] = sqrt(x[0][0]*x[0][0] + y[0][0]*y[0][0] + z[0][0]*z[0][0]);
-       rad[1] = sqrt(x[1][0]*x[1][0] + y[1][0]*y[1][0] + z[1][0]*z[1][0]);
+
+       // calculating coordinates of vectors belonging to hi (index 0) and p (index 1)
+       dx[0] = x[0][3] - x[0][0]; dy[0] = y[0][3] - y[0][0]; dz[0] = z[0][3] - z[0][0];
+       dx[1] = x[1][3] - x[1][0]; dy[1] = y[1][3] - y[1][0]; dz[1] = z[1][3] - z[1][0];
+
+       rad[0] = sqrt(dx[0]*dx[0] + dy[0]*dy[0] + dz[0]*dz[0]);
+       rad[1] = sqrt(dx[1]*dx[1] + dy[1]*dy[1] + dz[1]*dz[1]);
+        //rad[0] = sqrt(x[0][0]*x[0][0] + y[0][0]*y[0][0] + z[0][0]*z[0][0]);
+       //rad[1] = sqrt(x[1][0]*x[1][0] + y[1][0]*y[1][0] + z[1][0]*z[1][0]);
 
        // cos of angles = scalar product/their lengths
-       cos_ang = (x[0][0]*x[1][0] + y[0][0]*y[1][0] + z[0][0]*z[1][0])/(rad[0]*rad[1]);
+       cos_ang = (dx[0]*dx[1] + dy[0]*dy[1] + dz[0]*dz[1])/(rad[0]*rad[1]);
+       //cos_ang = (x[0][0]*x[1][0] + y[0][0]*y[1][0] + z[0][0]*z[1][0])/(rad[0]*rad[1]);
+
        ang_p1S = acos(cos_ang)*1000.;
        if(ang_p1S > ang_p1S_max) ang_p1S_max = ang_p1S;
 

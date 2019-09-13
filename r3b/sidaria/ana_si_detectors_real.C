@@ -43,8 +43,8 @@ void ana_si_detectors_real(){
     //DEFINE THE INPUT FILE  --------------------------------------------------
 
     //TString file_in = "/data.local2/G4_sim_momenta/sim_out_500k_110719.root";
-    //TString file_in = "./sim_out.root";
     TString file_in = "./sim_out_real.root";
+    //TString file_in = "/data.local2/G4_sim_momenta/sim_out_real.root";
     TFile *file0 = TFile::Open(file_in);
     TTree* Tree0 = (TTree*)file0->Get("evt");
     Long64_t nevents = Tree0->GetEntries();
@@ -56,43 +56,43 @@ void ana_si_detectors_real(){
 
     //HISTOGRAMS DEFINITION
 
-    TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",500,30.0,40.0);
+    TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",500,31.0,37.0);
    //   TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",500,35.6,36.2);
-    TH1F* h_p_pz = new TH1F("h_p_pz","Longitudinal momentum of proton (GeV/c)",500,1.1,1.4);
+    TH1F* h_p_pz = new TH1F("h_p_pz","Longitudinal momentum of proton (GeV/c)",500,0,1.4);
     TH1F* h_s_pt = new TH1F("h_s_pt","Transverse momentum of HI (GeV/c)",500,0.0,0.7);
     TH1F* h_p_pt = new TH1F("h_p_pt","Transverse momentum of proton (GeV/c)",500,0.0,0.08);
     TH1F* h_s_px = new TH1F("h_s_px","Px of HI (GeV/c)",500,-0.5,0.5);
     TH1F* h_p_px = new TH1F("h_p_px","Px of proton (GeV/c)",500,-0.5,0.5);
     TH1F* ang_s_p = new TH1F("ang_s_p","Angle between 29S and proton (mrad)",1000,0,70);
     TH1F* ang_s_p_cut = new TH1F("ang_s_p_cut","Angle between 29S and proton (mrad) with selecton on pz s",500,40,55);
-    TH2F* ang_momz = new TH2F("ang_momz","Correlation between long mom of HI and angle HI-p",500,30.0,40.0,500,0,80);
-    TH2F* ang_momt = new TH2F("ang_momt","Correlation between transv mom of HI and angle HI-p",500,0.0,0.7,500,0,80);
+    TH2F* ang_momz = new TH2F("ang_momz","Correlation between long mom of HI and angle HI-p",500,32.0,32.8,500,0,80);
+    TH2F* ang_momt = new TH2F("ang_momt","Correlation between transv mom of HI and angle HI-p",500,0.0,0.3,500,0,80);
     TH2F* ang_momtp = new TH2F("ang_momtp","Correlation between transv mom of proton and angle HI-p",500,0.0,0.08,500,0,80);
-    TH2F* h_pt_pt = new TH2F("h_pt_pt","Correlation between transverse momenta of products",500,0.0,0.08,500,0.0,0.7);
-    TH2F* h_pz_pz = new TH2F("h_pz_pz","Correlation between longitudinal momenta of products",500,1.1,1.4,500,30.0,40.0);
-    TH2F* h_pt_pz = new TH2F("h_pt_pz","Correlation between longitudinal mom of HI and transv of proton",500,0.0,0.08,500,30.0,40.0);
-    TH2F* h_pz_pt = new TH2F("h_pz_pt","Correlation between transv mom of HI and long mom of proton",500,1.1,1.4,500,0.0,0.7);
+    TH2F* h_pt_pt = new TH2F("h_pt_pt","Correlation between transverse momenta of products",500,0.0,0.08,500,0.0,0.3);
+    TH2F* h_pz_pz = new TH2F("h_pz_pz","Correlation between longitudinal momenta of products",500,1.0,1.4,500,31.0,37.0);
+    TH2F* h_pt_pz = new TH2F("h_pt_pz","Correlation between longitudinal mom of HI and transv of proton",500,0.0,0.08,500,31.0,37.0);
+    TH2F* h_pz_pt = new TH2F("h_pz_pt","Correlation between transv mom of HI and long mom of proton",500,1.1,1.4,500,0.0,0.3);
     TAxis* xaxis = new TAxis();
-    TH2F* h_corr = new TH2F("h_corr","Correlation plot reflecting entries",500,35.76,36.05,500,1,500);
+    TH2F* h_corr = new TH2F("h_corr","Correlation plot reflecting entries",500,31.0,37.0,500,1,500);
     TH2F* h_pz_pt_s = new TH2F("h_pz_pt_s","pz 29S - x, pt 29S - y",500,35.76,36.05,500,0.0,0.08);
     //energies
-    TH1F* h_s_en = new TH1F("h_s_en","Total energy of 29S (GeV)",500,43,44);
-    TH1F* h_p_en = new TH1F("h_p_en","Total energy of proton (GeV)",500,1.,2.0);
-    TH1F* h_s_kin = new TH1F("h_s_kin","Kinetic energy of 29S (GeV)",500,16,17);
+    TH1F* h_s_en = new TH1F("h_s_en","Total energy of 29S (GeV)",500,41,46);
+    TH1F* h_p_en = new TH1F("h_p_en","Total energy of proton (GeV)",500,1,2);
+    TH1F* h_s_kin = new TH1F("h_s_kin","Kinetic energy of 29S (GeV)",500,14,19);
     TH1F* h_p_kin = new TH1F("h_p_kin","Kinetic energy of proton (GeV)",500,0.,1.0);
     TH1F* h_s_de = new TH1F("h_s_de","Energy loss of 29S (GeV)",500,0.0,0.08);
     TH1F* h_p_de = new TH1F("h_p_de","Energy loss of proton (GeV)",500,0.0,0.001);
 
-    TH1F* h_qval = new TH1F("h_qval","Q-value via kin energy difference (MeV)",500,1.4,2.4);
-    TH1F* h_qval1 = new TH1F("h_qval1","Q-value via kin energy difference (MeV)",500,1.4,2.4);
-    TH1F* h_qval2 = new TH1F("h_qval2","Q-value via proton pcm (MeV)",500,1.98,2.02);
-    TH1F* h_qval4 = new TH1F("h_qval4","Q-value via proton pcm (MeV)",500,1.98,2.02);
-    TH1F* h_qval3 = new TH1F("h_qval3","Q-value via HI pcm (MeV)",500,1.8,2.2);
-    TH1F* h_qval5 = new TH1F("h_qval5","Q-value via HI pcm (MeV)",500,1.8,2.2);
-    TH1F* h_qval6 = new TH1F("h_qval6","Q-value via HI pcm at FRS (MeV)",500,-0.1,3.);
-    TH1F* h_qval7 = new TH1F("h_qval7","Q-value via HI pcm at FRS (MeV)",500,-0.1,3.);
-    TH1F* h_qval8 = new TH1F("h_qval8","Q-value via proton pcm at FRS (MeV)",500,-0.1,3.);
-    TH1F* h_qval9 = new TH1F("h_qval9","Q-value via proton pcm at FRS (MeV)",500,-0.1,3.);
+    TH1F* h_qval = new TH1F("h_qval","Q-value via kin energy difference (MeV)",500,0.0,4.4);
+    TH1F* h_qval1 = new TH1F("h_qval1","Q-value via kin energy difference (MeV)",500,0.0,4.4);
+    TH1F* h_qval2 = new TH1F("h_qval2","Q-value via proton pcm (MeV)",500,0.0,4.4);
+    TH1F* h_qval4 = new TH1F("h_qval4","Q-value via proton pcm (MeV)",500,0.0,4.4);
+    TH1F* h_qval3 = new TH1F("h_qval3","Q-value via HI pcm (MeV)",500,0.0,4.4);
+    TH1F* h_qval5 = new TH1F("h_qval5","Q-value via HI pcm (MeV)",500,0.0,4.4);
+    TH1F* h_qval6 = new TH1F("h_qval6","Q-value via HI pcm at FRS (MeV)",500,0.0,4.4);
+    TH1F* h_qval7 = new TH1F("h_qval7","Q-value via HI pcm at FRS (MeV)",500,0.0,4.4);
+    TH1F* h_qval8 = new TH1F("h_qval8","Q-value via proton pcm at FRS (MeV)",500,0.0,4.4);
+    TH1F* h_qval9 = new TH1F("h_qval9","Q-value via proton pcm at FRS (MeV)",500,0.0,4.4);
 
     //Monte-Carlo Track (input)
     TClonesArray* MCTrackCA;  
@@ -121,12 +121,12 @@ void ana_si_detectors_real(){
     Double_t cos_ang, ang_p1S, ang_p1S_max = 0.0;
     Double_t s_pz, p_pz, p_pt, s_pt, s_px, s_py, p_px, p_py;
     Double_t det01, dist01, de_p = 0., de_s = 0.;
-    Double_t s_pz_max = 35.9, s_pz_min = 35.9;
+    Double_t s_pz_max = 32.2, s_pz_min = 32.2;
     
 
     //***** Values for cheking qvalue reproducement, taken from asciigenerator *******//
     Double_t q_kin = 0.;   // I calculate by the formula using difference of kinetic energies
-    Double_t qvalue_in = 0.002; // I set initially
+    Double_t qvalue_in = 0.003; // I set initially
     Double_t Mp = 0.938272297;
     Double_t Mhi = 29.*0.93149406-0.003156;
     Double_t Pmom, Phi, Pp;
@@ -149,7 +149,7 @@ void ana_si_detectors_real(){
 
     //****** Conditions on the event selection *****
     Double_t min_angle = 2.0;   // minimum angle between trajectories is 2 mrad
-    Double_t same_strip = 0.03; // minimum distance 300mum between coordinates of hi and p, if less than they hit the same strip 
+    Double_t same_strip = 0.002; // minimum distance 300mum between coordinates of hi and p, if less than they hit the same strip 
     Double_t max_dist = 0.018;  // maximum distance between trajectories 180 mum, if greater hi and p don't come from the same mother
 
     Int_t counter = 0;
@@ -157,8 +157,8 @@ void ana_si_detectors_real(){
     bool flag;
 
     //************* MAIN LOOP OVER EVENTS *************************************
-    //for(Int_t i=0;i<10000;i++){
-    for(Int_t i=0;i<nevents;i++){
+    for(Int_t i=0;i<100000;i++){
+    //for(Int_t i=0;i<nevents;i++){
        //cout << "Event " << i << endl;
        hi_1 = false; p_1 = false;  // at the beggining of each event logic is reloaded
        hi_2 = false; p_2 = false;
@@ -227,7 +227,7 @@ void ana_si_detectors_real(){
               x[0][0] = Tra[h]->GetXOut();
               y[0][0] = Tra[h]->GetYOut();
               z[0][0] = Tra[h]->GetZOut();
-              cout << " xyz for 29S in 1st detector " << x[0][0] << " " << y[0][0] << " " << z[0][0] <<endl;
+              //cout << " xyz for 29S in 1st detector " << x[0][0] << " " << y[0][0] << " " << z[0][0] <<endl;
 
               de_s = Tra[h]->GetEloss();
               e_hi_lab = sqrt(s_px*s_px + s_py*s_py + s_pz*s_pz + Mhi*Mhi);
@@ -248,7 +248,7 @@ void ana_si_detectors_real(){
               x[1][0] = Tra[h]->GetXOut();
               y[1][0] = Tra[h]->GetYOut();
               z[1][0] = Tra[h]->GetZOut(); 
-              cout << " xyz for proton in 1st detector " << x[1][0] << " " << y[1][0] << " " << z[1][0] <<endl;
+              //cout << " xyz for proton in 1st detector " << x[1][0] << " " << y[1][0] << " " << z[1][0] <<endl;
               de_p = Tra[h]->GetEloss(); 
               e_p_lab = sqrt(p_px*p_px + p_py*p_py + p_pz*p_pz + Mp*Mp);   
 
@@ -262,7 +262,7 @@ void ana_si_detectors_real(){
               x[0][3] = Tra[h]->GetXOut();
               y[0][3] = Tra[h]->GetYOut();
               z[0][3] = Tra[h]->GetZOut();
-              cout << " xyz for 29S in 4th detector " << x[0][3] << " " << y[0][3] << " " << z[0][3] <<endl;
+              //cout << " xyz for 29S in 4th detector " << x[0][3] << " " << y[0][3] << " " << z[0][3] <<endl;
             }
 
             //******* proton in 4th silicon ****************
@@ -271,7 +271,7 @@ void ana_si_detectors_real(){
               x[1][3] = Tra[h]->GetXOut();
               y[1][3] = Tra[h]->GetYOut();
               z[1][3] = Tra[h]->GetZOut(); 
-              cout << " xyz for proton in 4th detector " << x[1][3] << " " << y[1][3] << " " << z[1][3] <<endl;
+              //cout << " xyz for proton in 4th detector " << x[1][3] << " " << y[1][3] << " " << z[1][3] <<endl;
             }
 
             if(Tra[h]->GetPdi()==1000160290 && Tra[h]->GetDetCopyID()==2) { hi_2 = true; /*cout << "29s is in 2nd detector" << endl;*/}
@@ -500,12 +500,12 @@ void ana_si_detectors_real(){
     h_pz_pz->GetYaxis()->SetTitle("Pz of HI (GeV/c)");
     h_pz_pz->Draw("colz");
     c4->cd(3);
-    h_pt_pz->GetXaxis()->SetTitle("Pz of proton (GeV/c)");
-    h_pt_pz->GetYaxis()->SetTitle("Pt of HI (GeV/c)");
+    h_pt_pz->GetXaxis()->SetTitle("Pt of proton (GeV/c)");
+    h_pt_pz->GetYaxis()->SetTitle("Pz of HI (GeV/c)");
     h_pt_pz->Draw("colz");
     c4->cd(4);
-    h_pz_pt->GetXaxis()->SetTitle("Pt of proton (GeV/c)");
-    h_pz_pt->GetYaxis()->SetTitle("Pz of HI (GeV/c)");
+    h_pz_pt->GetXaxis()->SetTitle("Pz of proton (GeV/c)");
+    h_pz_pt->GetYaxis()->SetTitle("Pt of HI (GeV/c)");
     h_pz_pt->Draw("colz");
 
     TCanvas * c5 = new TCanvas("momenta3", "Momenta in lab",1600,0,800,900);

@@ -53,7 +53,7 @@ void create_ams_geo(const char* geoTag="s444")
 
   // -------   Geometry file name (output)   ----------------------------------
   TString geoFileName = geoPath + "/geometry/ams_";
-  geoFileName = geoFileName + geoTag + ".geo.root";
+  geoFileName = geoFileName + geoTag + "_real.geo.root";
   // --------------------------------------------------------------------------
 
   // -----------------   Get and create the required media    -----------------
@@ -151,9 +151,8 @@ void create_ams_geo(const char* geoTag="s444")
   //HALF SIZES
 	dx = 3.600000;
 	dy = 2.050000;
-//	dz = 0.015000;
-  dz = 0.000050; //half a micron
-//  dz = 0.000001;
+  //dz = 0.000050; //half a micron for kinematic case
+  dz = 0.01500; // 150 micron for realistic case
 
 	// Volume: TraLog
 	TGeoVolume *TraLog = gGeoManager->MakeBox("TraLog",pMedSi,dx,dy,dz);
@@ -164,7 +163,9 @@ void create_ams_geo(const char* geoTag="s444")
   //HALF SIZES
   dx = 1.500000;
   dy = 1.500000;
-  dz = 1.300000e-5;
+  //dz = 1.300000e-5; // 0.13 micron for kinematic case
+  dz = 1.300000; // 1.3 cm for realistic case
+  //dz = 0.300000;
 
   TGeoVolume *Targ = gGeoManager->MakeBox("Targ",pMedBe,dx,dy,dz);
   Targ->SetVisLeaves(kTRUE);
@@ -255,11 +256,11 @@ void create_ams_geo(const char* geoTag="s444")
     
 	//Si sensors
 	//aTra->AddNode(TraLog,1, pMatrix4);
-	aTra->AddNode(TraLog,1, pMatrix6);//down
-	aTra->AddNode(TraLog,2, pMatrix8);//up
-	aTra->AddNode(TraLog,3, pMatrix10);//left
-	aTra->AddNode(TraLog,4, pMatrix12);//right
-  aTra->AddNode(Targ,5, pMatrix14);//target
+	aTra->AddNode(TraLog,1, pMatrix6);//  1st si
+	aTra->AddNode(TraLog,2, pMatrix8);//  2nd si
+	aTra->AddNode(TraLog,3, pMatrix10);// 3rd si
+	aTra->AddNode(TraLog,4, pMatrix12);// 4th si
+  aTra->AddNode(Targ,5, pMatrix14);//   target
 	//aTra->AddNode(TraLog,6, pMatrix2);
   
   
