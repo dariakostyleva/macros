@@ -42,7 +42,7 @@ void ana_si_detectors_kinem(){
 
     //DEFINE THE INPUT FILE  --------------------------------------------------
 
-    TString file_in = "/data.local2/G4_sim_momenta/sim_out_500k_110719.root";
+    TString file_in = "/data.local2/G4_sim_momenta/kinem_case/sim_out_500k_110719.root";
     //TString file_in = "./sim_out.root";
     //TString file_in = "./sim_out_kinem.root";
     TFile *file0 = TFile::Open(file_in);
@@ -50,7 +50,7 @@ void ana_si_detectors_kinem(){
     Long64_t nevents = Tree0->GetEntries();
     std::cout<<"Number of entries: "<<nevents<<std::endl;
 
-    TString file_hist_out = "./root_with_hist_kinem/out_hist_newangle_110919.root";
+    TString file_hist_out = "./root_with_hist_kinem/out_hist_190919.root";
     TFile * out_hist = new TFile(file_hist_out,"RECREATE");
     //TFile * out_hist = new TFile("out_hist_1m.root","RECREATE");
 

@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void read_mom_widths(const Int_t col_numb = 0, TString filename = "") {
+void read_mom_widths_kinem(const Int_t col_numb = 0, TString filename = "") {
 	if(col_numb == 0 || filename == "") {cout<<"Warning: 1st argument - column number, 2nd - input file name "<<endl; return;}
 
 	//********** Reading values from .txt file *******************************
@@ -89,11 +89,11 @@ void read_mom_widths(const Int_t col_numb = 0, TString filename = "") {
     auto graph = new TGraphErrors(dim,&evt_num[0],&mean_p[0],0,&error[0]);
     graph->SetTitle("Range of longitudinal momentum distribution of HI from number of events in simulation");
     graph->SetMarkerSize(2);
-	graph->SetMarkerStyle(kFullCircle);
-	graph->SetMarkerColor(kBlack);
-	graph->SetLineWidth(2);
-	graph->SetLineColor(kRed);
-	graph->GetXaxis()->SetTitle("Number of events");
+	  graph->SetMarkerStyle(kFullCircle);
+	  graph->SetMarkerColor(kBlack);
+	  graph->SetLineWidth(2);
+	  graph->SetLineColor(kRed);
+	  graph->GetXaxis()->SetTitle("Number of events");
   	graph->GetYaxis()->SetTitle("Range of longitudinal momentum of HI with errors [GeV/c]");
   	graph->GetYaxis()->SetRangeUser(0.04,0.21);
   	graph->GetXaxis()->SetRangeUser(0.0,35.5);

@@ -3,7 +3,8 @@ void runsim_real(Int_t nEvents = 0)
 
   // =========== Configuration area =============================
 
-  TString OutFile = "sim_out_real.root";  // Output file for data
+  //TString OutFile = "/data.local2/G4_sim_momenta/real_case/sim_out_real_500k_190919.root";  // Output file for data
+  TString OutFile = "sim_out_real.root";
   TString ParFile = "sim_par.root";  // Output file for params
 
   Bool_t fVis = true;                // Store tracks for visualization
@@ -16,7 +17,7 @@ void runsim_real(Int_t nEvents = 0)
   TString fEventFile = "evt_gen3.dat";           // Input event file in the case of ascii generator
 //  TString fGenerator = "box";        // Event generator type: box, gammas, r3b, ion, ascii
 //  TString fEventFile = "";           // Input event file in the case of ascii generator
-  Int_t randomSeed = 335566; // 0 for time-dependent random numbers, 335566 for time-independent
+  Int_t randomSeed = 0; // 0 for time-dependent random numbers, 335566 for time-independent
 
 
   // ---------------  Detector selection: true - false -------------------------------

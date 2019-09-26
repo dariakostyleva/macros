@@ -3,10 +3,10 @@
 #include "TGraphErrors.h"
 #include "TF1.h"
 
-void qval_mom(){
+void qval_mom_kinem(){
 
   	auto c = new TCanvas("mycanvas1","mycanvas1",0,0,1000,900);
-  	c->Divide(1,2);
+  	//c->Divide(1,2);
 	const int n_points = 21;
 	Double_t err_p[21];
 	Double_t err_ql[21]; //lower error bar
@@ -54,8 +54,8 @@ void qval_mom(){
 
     //graph->GetXaxis()->SetLimits(0.0,45.0);
     graph->GetXaxis()->SetLimits(0.0,0.006);
-    graph->GetYaxis()->SetRangeUser(0.0,0.40);
-    c->cd(1);
+    graph->GetYaxis()->SetRangeUser(0.0,0.80);
+    //c->cd(1);
     graph->Draw("AP");
     acc->Draw("same");
     acc2->Draw("same");

@@ -19,9 +19,10 @@
 using namespace std;
 
 
-void ana_width(Int_t iterator = 0, Int_t countum = 0, Int_t runnumb = 0, Int_t maxcount = 0){
+void ana_width_real(Int_t iterator = 0, Int_t countum = 0, Int_t runnumb = 0){
 
-    TString file_in = "sim_out_kinem.root";
+    //TString file_in = "sim_out_kinem.root";
+    TString file_in = "sim_out_real.root";
     TFile *file0 = TFile::Open(file_in);
     TTree* Tree0 = (TTree*)file0->Get("evt");
     Long64_t nevents = Tree0->GetEntries();
@@ -53,12 +54,18 @@ void ana_width(Int_t iterator = 0, Int_t countum = 0, Int_t runnumb = 0, Int_t m
     Int_t MCtracksPerEvent=0;
 
     Double_t s_pz, delta_s_pz;
-    Double_t s_pz_max = 35.9, s_pz_min = 35.9;
+    Double_t s_pz_max = 0., s_pz_min;
+    s_pz_min = s_pz_max;
     //Double_t widths_arr[runnumb]; // runnumb - this many times this script is run 
+    bool hi_1, p_1, hi_4, p_4;  // flags to help looking for coincidences of hi and p in the 1st and 4th detectors 
+    bool flag;
+    Int_t counter = 0;
 
     //************* MAIN LOOP OVER EVENTS *************************************
     for(Int_t i=0;i<nevents;i++){
        //if(i%10000 == 0) printf("Event:%i\n",i);
+       hi_1 = false; p_1 = false;  // at the beggining of each event logic is reloaded
+       hi_4 = false; p_4 = false;
 
        MCTrackCA->Clear();
        TraCA->Clear();
@@ -80,18 +87,25 @@ void ana_width(Int_t iterator = 0, Int_t countum = 0, Int_t runnumb = 0, Int_t m
        for(Int_t h=0;h<traPerEvent;h++){          
            //******* 29S *******************
            if(Tra[h]->GetPdi()==1000160290 && Tra[h]->GetDetCopyID()==1){
+              hi_1 = true;
               Tra[h]->MomentumOut(momentum_s);
               s_pz = Tra[h]->GetPzOut();
-              if(s_pz > s_pz_max) s_pz_max = s_pz;
-              if(s_pz < s_pz_min && s_pz > 0.) s_pz_min = s_pz;
+
               //printf("pz is %f, pz max is %f, pz min is %f\n",s_pz, s_pz_max,s_pz_min);
            }
+           if(Tra[h]->GetPdi()==2212 && Tra[h]->GetDetCopyID()==1) { p_1 = true; }
+           if(Tra[h]->GetPdi()==1000160290 && Tra[h]->GetDetCopyID()==4) { hi_4 = true;}
+           if(Tra[h]->GetPdi()==2212 && Tra[h]->GetDetCopyID()==4) { p_4 = true; }
        }//for tracker
- 
-       h_s_pz->Fill(s_pz);
-     
 
-       if(traPerEvent>0)         delete[] Tra;
+      if (hi_1 && p_1 && hi_4 && p_4) {
+        h_s_pz->Fill(s_pz);
+        counter++;
+        if (counter==1) {s_pz_max = s_pz; s_pz_min = s_pz_max;}
+        else if (s_pz > s_pz_max) {s_pz_max = s_pz;}
+        else if (s_pz < s_pz_min && s_pz > 0.) {s_pz_min = s_pz;}
+      }
+      if(traPerEvent>0)         delete[] Tra;
 
     }//loop for nevents
     //TCanvas *c1 = new TCanvas("long_mom", "Longitudinal momentum of HI",0,0,800,900);
@@ -103,10 +117,15 @@ void ana_width(Int_t iterator = 0, Int_t countum = 0, Int_t runnumb = 0, Int_t m
 
 
     ofstream myfile;
-    myfile.open ("mom_widths.txt",std::ios_base::app);
-    if(iterator == 0) myfile << countum << " ";
+    myfile.open ("mom_widths_real.txt",std::ios_base::app);
+    //if(iterator == 0) myfile << countum << " ";
+  /*  
+    if(iterator == 0) myfile << nevents << " ";// << counter << " ";
     myfile << delta_s_pz << " ";
-    if(iterator == runnumb-1) myfile << "\n";
+    if(iterator == runnumb-1) myfile << "\n"; // to put enter 
+*/  myfile << counter << " " << delta_s_pz << " " << "\n";
+   // if(iterator == runnumb-1) myfile << "\n";
+
     myfile.close();
     //widths_arr[iterator] = delta_s_pz;
     printf("Macro ana_width.C finished succesfully.\n");

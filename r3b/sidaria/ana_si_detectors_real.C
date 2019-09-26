@@ -42,7 +42,7 @@ void ana_si_detectors_real(){
 
     //DEFINE THE INPUT FILE  --------------------------------------------------
 
-    //TString file_in = "/data.local2/G4_sim_momenta/sim_out_500k_110719.root";
+    //TString file_in = "/data.local2/G4_sim_momenta/real_case/sim_out_real_500k_190919.root";
     TString file_in = "./sim_out_real.root";
     //TString file_in = "/data.local2/G4_sim_momenta/sim_out_real.root";
     TFile *file0 = TFile::Open(file_in);
@@ -50,38 +50,39 @@ void ana_si_detectors_real(){
     Long64_t nevents = Tree0->GetEntries();
     std::cout<<"Number of entries: "<<nevents<<std::endl;
 
+    //TString file_hist_out = "./root_with_hist_real/out_hist_500k_190919.root";
     TString file_hist_out = "./root_with_hist_real/out_hist.root";
     TFile * out_hist = new TFile(file_hist_out,"RECREATE");
     //TFile * out_hist = new TFile("out_hist_1m.root","RECREATE");
 
     //HISTOGRAMS DEFINITION
 
-    TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",500,31.0,37.0);
+    TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",100,31.5,33.0);
    //   TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",500,35.6,36.2);
-    TH1F* h_p_pz = new TH1F("h_p_pz","Longitudinal momentum of proton (GeV/c)",500,0,1.4);
-    TH1F* h_s_pt = new TH1F("h_s_pt","Transverse momentum of HI (GeV/c)",500,0.0,0.7);
-    TH1F* h_p_pt = new TH1F("h_p_pt","Transverse momentum of proton (GeV/c)",500,0.0,0.08);
-    TH1F* h_s_px = new TH1F("h_s_px","Px of HI (GeV/c)",500,-0.5,0.5);
-    TH1F* h_p_px = new TH1F("h_p_px","Px of proton (GeV/c)",500,-0.5,0.5);
-    TH1F* ang_s_p = new TH1F("ang_s_p","Angle between 29S and proton (mrad)",1000,0,70);
-    TH1F* ang_s_p_cut = new TH1F("ang_s_p_cut","Angle between 29S and proton (mrad) with selecton on pz s",500,40,55);
-    TH2F* ang_momz = new TH2F("ang_momz","Correlation between long mom of HI and angle HI-p",500,32.0,32.8,500,0,80);
-    TH2F* ang_momt = new TH2F("ang_momt","Correlation between transv mom of HI and angle HI-p",500,0.0,0.3,500,0,80);
-    TH2F* ang_momtp = new TH2F("ang_momtp","Correlation between transv mom of proton and angle HI-p",500,0.0,0.08,500,0,80);
-    TH2F* h_pt_pt = new TH2F("h_pt_pt","Correlation between transverse momenta of products",500,0.0,0.08,500,0.0,0.3);
-    TH2F* h_pz_pz = new TH2F("h_pz_pz","Correlation between longitudinal momenta of products",500,1.0,1.4,500,31.0,37.0);
-    TH2F* h_pt_pz = new TH2F("h_pt_pz","Correlation between longitudinal mom of HI and transv of proton",500,0.0,0.08,500,31.0,37.0);
-    TH2F* h_pz_pt = new TH2F("h_pz_pt","Correlation between transv mom of HI and long mom of proton",500,1.1,1.4,500,0.0,0.3);
+    TH1F* h_p_pz = new TH1F("h_p_pz","Longitudinal momentum of proton (GeV/c)",300,0,1.4);
+    TH1F* h_s_pt = new TH1F("h_s_pt","Transverse momentum of HI (GeV/c)",100,0.0,0.7);
+    TH1F* h_p_pt = new TH1F("h_p_pt","Transverse momentum of proton (GeV/c)",100,0.0,0.08);
+    TH1F* h_s_px = new TH1F("h_s_px","Px of HI (GeV/c)",100,-0.5,0.5);
+    TH1F* h_p_px = new TH1F("h_p_px","Px of proton (GeV/c)",100,-0.5,0.5);
+    TH1F* ang_s_p = new TH1F("ang_s_p","Angle between 29S and proton (mrad)",100,0,70);
+    TH1F* ang_s_p_cut = new TH1F("ang_s_p_cut","Angle between 29S and proton (mrad) with selecton on pz s",100,40,55);
+    TH2F* ang_momz = new TH2F("ang_momz","Correlation between long mom of HI and angle HI-p",100,32.0,32.8,100,0,80);
+    TH2F* ang_momt = new TH2F("ang_momt","Correlation between transv mom of HI and angle HI-p",100,0.0,0.3,100,0,80);
+    TH2F* ang_momtp = new TH2F("ang_momtp","Correlation between transv mom of proton and angle HI-p",100,0.0,0.08,100,0,80);
+    TH2F* h_pt_pt = new TH2F("h_pt_pt","Correlation between transverse momenta of products",100,0.0,0.08,100,0.0,0.3);
+    TH2F* h_pz_pz = new TH2F("h_pz_pz","Correlation between longitudinal momenta of products",100,1.0,1.4,100,32.0,33.0);
+    TH2F* h_pt_pz = new TH2F("h_pt_pz","Correlation between longitudinal mom of HI and transv of proton",100,0.0,0.08,100,32.0,33.0);
+    TH2F* h_pz_pt = new TH2F("h_pz_pt","Correlation between transv mom of HI and long mom of proton",100,0.95,1.4,100,0.0,0.3);
     TAxis* xaxis = new TAxis();
-    TH2F* h_corr = new TH2F("h_corr","Correlation plot reflecting entries",500,31.0,37.0,500,1,500);
-    TH2F* h_pz_pt_s = new TH2F("h_pz_pt_s","pz 29S - x, pt 29S - y",500,35.76,36.05,500,0.0,0.08);
+    TH2F* h_corr = new TH2F("h_corr","Correlation plot reflecting entries",100,31.0,37.0,100,1,500);
+    TH2F* h_pz_pt_s = new TH2F("h_pz_pt_s","pz 29S - x, pt 29S - y",100,35.76,36.05,100,0.0,0.08);
     //energies
-    TH1F* h_s_en = new TH1F("h_s_en","Total energy of 29S (GeV)",500,41,46);
-    TH1F* h_p_en = new TH1F("h_p_en","Total energy of proton (GeV)",500,1,2);
-    TH1F* h_s_kin = new TH1F("h_s_kin","Kinetic energy of 29S (GeV)",500,14,19);
-    TH1F* h_p_kin = new TH1F("h_p_kin","Kinetic energy of proton (GeV)",500,0.,1.0);
-    TH1F* h_s_de = new TH1F("h_s_de","Energy loss of 29S (GeV)",500,0.0,0.08);
-    TH1F* h_p_de = new TH1F("h_p_de","Energy loss of proton (GeV)",500,0.0,0.001);
+    TH1F* h_s_en = new TH1F("h_s_en","Total energy of 29S (GeV)",100,41,46);
+    TH1F* h_p_en = new TH1F("h_p_en","Total energy of proton (GeV)",100,1,2);
+    TH1F* h_s_kin = new TH1F("h_s_kin","Kinetic energy of 29S (GeV)",100,14,19);
+    TH1F* h_p_kin = new TH1F("h_p_kin","Kinetic energy of proton (GeV)",100,0.,1.0);
+    TH1F* h_s_de = new TH1F("h_s_de","Energy loss of 29S (GeV)",100,0.0,0.08);
+    TH1F* h_p_de = new TH1F("h_p_de","Energy loss of proton (GeV)",100,0.0,0.001);
 
     TH1F* h_qval = new TH1F("h_qval","Q-value via kin energy difference (MeV)",500,0.0,4.4);
     TH1F* h_qval1 = new TH1F("h_qval1","Q-value via kin energy difference (MeV)",500,0.0,4.4);
@@ -120,13 +121,14 @@ void ana_si_detectors_real(){
     Double_t dx[2]= {0}, dy[2]= {0}, dz[2]= {0}, rad[2]= {0}; // index - particle (0 - 29S, 1 - proton)
     Double_t cos_ang, ang_p1S, ang_p1S_max = 0.0;
     Double_t s_pz, p_pz, p_pt, s_pt, s_px, s_py, p_px, p_py;
-    Double_t det01, dist01, de_p = 0., de_s = 0.;
-    Double_t s_pz_max = 32.2, s_pz_min = 32.2;
+    Double_t det_p_hi, dist_p_hi, de_p = 0., de_s = 0.;
+    Double_t s_pz_max = 0., s_pz_min;
+    s_pz_min = s_pz_max;
     
 
     //***** Values for cheking qvalue reproducement, taken from asciigenerator *******//
     Double_t q_kin = 0.;   // I calculate by the formula using difference of kinetic energies
-    Double_t qvalue_in = 0.003; // I set initially
+    Double_t qvalue_in = 0.002; // I set initially
     Double_t Mp = 0.938272297;
     Double_t Mhi = 29.*0.93149406-0.003156;
     Double_t Pmom, Phi, Pp;
@@ -147,25 +149,26 @@ void ana_si_detectors_real(){
     //Double_t sintheta = std::sqrt((1.0 - costheta)*(1.0 + costheta));
     //Double_t phi  = 2*TMath::Pi()*gRandom->Uniform(0,1);
 
-    //****** Conditions on the event selection *****
+    //****** Conditions on the event selection **********************************************************
     Double_t min_angle = 2.0;   // minimum angle between trajectories is 2 mrad
-    Double_t same_strip = 0.002; // minimum distance 300mum between coordinates of hi and p, if less than they hit the same strip 
-    Double_t max_dist = 0.018;  // maximum distance between trajectories 180 mum, if greater hi and p don't come from the same mother
-
+    Double_t min_dist = 0.018;  // min distance between trajectories 180 mum, if greater hi and p don't come from the same mother
+    Double_t pitch_x = 0.011, pitch_y = 0.0104; // pitch size on x and y detector side, also min distance ~100mum between coordinates of hi and p, if less than they hit the same strip 
+    Int_t nstrip_x = 640, nstrip_y = 384; // number of strips on each side 
+    // **************************************************************************************************
     Int_t counter = 0;
     bool hi_1, p_1, hi_2, p_2, hi_3, p_3, hi_4, p_4;  // flags to help looking for coincidences of hi and p in the 1st and 4th detectors 
     bool flag;
 
     //************* MAIN LOOP OVER EVENTS *************************************
-    for(Int_t i=0;i<100000;i++){
-    //for(Int_t i=0;i<nevents;i++){
+    //for(Int_t i=0;i<100000;i++){
+    for(Int_t i=0;i<nevents;i++){
        //cout << "Event " << i << endl;
        hi_1 = false; p_1 = false;  // at the beggining of each event logic is reloaded
        hi_2 = false; p_2 = false;
        hi_3 = false; p_3 = false;
        hi_4 = false; p_4 = false;
 
-       if(i%10000 == 0) printf("Event:%i\n",i);
+       if(i%10000 == 0) printf("Event: %i\n",i);
 
        MCTrackCA->Clear();
        TraCA->Clear();
@@ -227,14 +230,15 @@ void ana_si_detectors_real(){
               x[0][0] = Tra[h]->GetXOut();
               y[0][0] = Tra[h]->GetYOut();
               z[0][0] = Tra[h]->GetZOut();
-              //cout << " xyz for 29S in 1st detector " << x[0][0] << " " << y[0][0] << " " << z[0][0] <<endl;
+           // cout << " x in um for 29S " << x[0][0]*10000 << " and " << x[0][0]*10000 + 0.01/640.0*10000*(0.5 - gRandom->Uniform(0,1)) << endl;
+            //  cout << " y in um for 29S " << y[0][0]*10000 << " and " << y[0][0]*10000 + 0.01/384.0*10000*(0.5 - gRandom->Uniform(0,1)) <<endl;
 
               de_s = Tra[h]->GetEloss();
               e_hi_lab = sqrt(s_px*s_px + s_py*s_py + s_pz*s_pz + Mhi*Mhi);
              // printf("e_hi_lab = %f\n",e_hi_lab);
             //  cout << "Detector " << Tra[h]->GetDetCopyID() << endl;
-              if(s_pz > s_pz_max) s_pz_max = s_pz;
-              if(s_pz < s_pz_min && s_pz > 0.) s_pz_min = s_pz;
+              if(s_pz > s_pz_max) {s_pz_max = s_pz; s_pz_min = s_pz_max;}
+              if(s_pz < s_pz_min && s_pz > 32.08) s_pz_min = s_pz;
              // printf("pz is %f, pz max is %f, pz min is %f\n",s_pz, s_pz_max,s_pz_min);
            }
            //******* proton in 1st silicon ****************
@@ -242,7 +246,8 @@ void ana_si_detectors_real(){
               p_1 = true;
               Tra[h]->MomentumOut(momentum_p);
               p_pt = sqrt(Tra[h]->GetPxOut()*Tra[h]->GetPxOut() + Tra[h]->GetPyOut()*Tra[h]->GetPyOut());
-              p_pz = Tra[h]->GetPzOut();
+              p_pz = momentum_p.Z();
+              //p_pz = Tra[h]->GetPzOut();
               p_px = Tra[h]->GetPxOut();
               p_py = Tra[h]->GetPyOut();            
               x[1][0] = Tra[h]->GetXOut();
@@ -284,11 +289,23 @@ void ana_si_detectors_real(){
        // ************** END OF LOOP over tracks per event ************************************
        //cout << "Tracks per event " << traPerEvent << endl;
 
+       // in reality there is resolution in coordinate determination
+       // !!!! below is not exactly true, because I skip the coordinates in 2nd and 3rd detectors
+       // !!!  also I'm not sure why it is exactly like this 
+       for (Int_t l=0; l < 2; l++) {
+         for (Int_t m=0; m < 4; m++) {
+           //x[l][m] = x[l][m] + pitch_x/nstrip_x*(0.5 - gRandom->Uniform(0,1));
+          // y[l][m] = y[l][m] + pitch_y/nstrip_y*(0.5 - gRandom->Uniform(0,1));
+          x[l][m] = x[l][m] + pitch_x*(0.5 - gRandom->Uniform(0,1));
+          y[l][m] = y[l][m] + pitch_y*(0.5 - gRandom->Uniform(0,1));
+         }
+       }
+
+
        // ************* COINCIDENCE CONDITION - track from both hi and p found in all silicons ****************
        if(hi_1 && p_1 /*&& hi_2 && p_2 && hi_3 && p_3*/ && hi_4 && p_4) {
 
          counter ++;
-
          //*********** Calculation of the angles between tracks ****************
          //*********** between 1st and 4th silicon (second indexes 0 and 3) ****
 
@@ -311,15 +328,27 @@ void ana_si_detectors_real(){
          //minimum angle between trajectories is 2 mrad
          //if(ang_p1S < min_angle) continue; //angle less than 2 mrad
 
-         //if decay products fall into the same strip i.e. dead zones
-         //if(abs(x[0][0]-x[1][0]) < same_strip) continue; //300 mum 
-         //if(abs(y[0][0]-y[1][0]) < same_strip) continue;
+         //*************************************************************************
+         //***** if decay products fall into the same strip i.e. dead zones
+         //***** in other words if diff between p and hi coord is less than smth
+         //in 1st detector
+         //if(abs(x[0][0]-x[1][0]) < spitch_x) continue; //300 mum 
+         //if(abs(y[0][0]-y[1][0]) < pitch_y) continue;
+
+         //in 4th detector 
+         //if(abs(x[0][3]-x[1][3]) < pitch_x) continue; //300 mum 
+         //if(abs(y[0][3]-y[1][3]) < pitch_y) continue;
+
+         //**************************************************************************
 
          //minimum distance between tracks, 0 - 29S, 1 - proton should not exceed 180 um
-         det01 = (x[0][0]-x[1][0])*(y[0][0]*z[1][0]-y[1][0]*z[0][0]) + (y[0][0]-y[1][0])*(-x[0][0]*z[1][0]+x[1][0]*z[0][0]) + (z[0][0]-z[1][0])*(x[0][0]*y[1][0]-x[1][0]*z[0][0]);
-         //det12=(x(1,1)-x(1,2))*(dy(1)*dz(2)-dy(2)*dz(1)) +(y(1,1)-y(1,2))*(-dx(1)*dz(2)+dx(2)*dz(1)) +(z(1,1)-z(1,2))*(dx(1)*dy(2)-dx(2)*dz(1))
-         dist01 = abs(det01/(rad[0]*rad[1]*sqrt(1.0-cos_ang*cos_ang)));
-         //if(dist01 > max_dist) continue;
+         // is determined as triple product (matrix determinant) divided by vector product
+         det_p_hi = (x[0][0]-x[1][0])*(dy[0]*dz[1]-dy[1]*dz[0]) + (y[0][0]-y[1][0])*( dx[1]*dz[0] - dx[0]*dz[1]) + (z[0][0]-z[1][0])*(dx[0]*dy[1]-dx[1]*dy[0]);
+         dist_p_hi = abs(det_p_hi/(rad[0]*rad[1]*sqrt(1.0-cos_ang*cos_ang)));
+
+         //******* if distance between p and hi trajectories is larger, then they don't come from the same point
+         //******* and if it fullfilled than we have vertex where hi and p meet
+         //if(dist_p_hi > min_dist) continue;
          //******************************************************************
 
          //***** cheking q-value reproducement ***********************************************
@@ -413,16 +442,11 @@ void ana_si_detectors_real(){
          h_p_en->Fill(e_p_lab);
          h_s_kin->Fill(e_hi_lab - Mhi);
          h_p_kin->Fill(e_p_lab - Mp);
-
-
          //******************************************************************
          //cout << "Num of prim "<<primary << endl;
-
-         if(traPerEvent>0)         delete[] Tra;
-         if(MCtracksPerEvent>0)    delete[] track;
-
        } // end of if coincidence condition
-
+       if(traPerEvent>0)         delete[] Tra;
+       if(MCtracksPerEvent>0)    delete[] track;
     }// end of loop for nevents
     cout << "I found both hi and p "<< counter <<" times in " << nevents << " events in all detectors" << endl;
 
@@ -434,7 +458,8 @@ void ana_si_detectors_real(){
     }
     printf("max angle betweeen HI and protons is %f mrad \n", ang_p1S_max);
     printf("pz max is %f GeV/c, pz min is %f GeV/c \n",s_pz_max,s_pz_min);
-    printf("delta p of HI = %f GeV/c \n",s_pz_max-s_pz_min);
+    printf("delta pz of HI = %f GeV/c \n",s_pz_max-s_pz_min);
+    printf("Mean of pz of HI = %f\n",h_s_pz->GetMean());
     printf("FRS acceptance = %f\n",h_s_pz->GetMean()/100*1); // FRS acceptance is 2% or +-1%
     printf("Super-FRS acceptance = %f\n",h_s_pz->GetMean()/100*2.5); // +-2.5%
 
@@ -553,7 +578,7 @@ void ana_si_detectors_real(){
     h_s_de->GetXaxis()->SetTitle("Energy loss of HI (GeV)");
     h_s_de->Draw();
 
-
+/*
     TCanvas * c7 = new TCanvas("qvalues", "Decay energies calculated differently",900,900,800,900);
     gStyle->SetOptFit();
     c7->Divide(1,5);
@@ -629,7 +654,7 @@ void ana_si_detectors_real(){
    // h_qval9->Fit("gaus","","", 1.95, 2.1);
    // TLegend *l7 = new TLegend(0.1,0.7,0.48,0.9);
 
-
+*/
     // writing histograms into root file 
     ang_s_p->Write();
     ang_momz->Write();
@@ -661,7 +686,7 @@ void ana_si_detectors_real(){
     h_p_en->Write();
     h_s_kin->Write();
     h_p_kin->Write();
-    c1->Write();c2->Write();c3->Write();c4->Write();c5->Write();c6->Write();c7->Write();
+    c1->Write();c2->Write();c3->Write();c4->Write();c5->Write();c6->Write();//c7->Write();
 
 
 
