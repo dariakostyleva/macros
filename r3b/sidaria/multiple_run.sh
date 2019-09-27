@@ -9,7 +9,7 @@
 #  ---------------------------------------------------------------------------------------------------------
 start=$SECONDS
 # VERY IMPORTANT to delete .txt file here, because otherwise it will continue writing in it
-rm mom_widths_real.txt
+#rm mom_widths_real.txt
 # number of events from which we want to start
 stacount=$1
 # max number of events up to which we want to go
