@@ -4,7 +4,10 @@
 using namespace std;
 
 void read_mom_widths_kinem(const Int_t col_numb = 0, TString filename = "") {
-	if(col_numb == 0 || filename == "") {cout<<"Warning: 1st argument - column number, 2nd - input file name "<<endl; return;}
+	if(col_numb == 0 || filename == "") {
+    cout<<"Warning: 1st argument - column number from txt file + 1, 2nd - input file name "<<endl; 
+    cout<<"Example: root -l 'read_mom_widths_kinem.C(101, ""mom_widths_2_50_100.txt"")' " <<endl;
+    return;}
 
 	//********** Reading values from .txt file *******************************
 	fstream in; //file we plant to read from

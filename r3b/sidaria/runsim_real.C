@@ -3,7 +3,8 @@ void runsim_real(Int_t nEvents = 0)
 
   // =========== Configuration area =============================
 
-  //TString OutFile = "/data.local2/G4_sim_momenta/real_case/sim_out_real_500k_190919.root";  // Output file for data
+  //TString OutFile = "/data.local2/G4_sim_momenta/real_case/sim_out_real_air_500k_041019.root";  // Output file for data
+ // TString OutFile = "sim_out_real_thesis_10k.root";
   TString OutFile = "sim_out_real.root";
   TString ParFile = "sim_par.root";  // Output file for params
 
@@ -76,8 +77,8 @@ void runsim_real(Int_t nEvents = 0)
 
   //Cave definition
   FairModule* cave= new R3BCave("CAVE");
- // cave->SetGeometryFileName("r3b_cave.geo");
-  cave->SetGeometryFileName("r3b_cave_vacuum.geo");
+  cave->SetGeometryFileName("r3b_cave.geo");
+ // cave->SetGeometryFileName("r3b_cave_vacuum.geo");
   run->AddModule(cave);
 
   //Target definition

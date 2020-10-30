@@ -26,7 +26,7 @@
 using namespace std;
 
 
-void ana_si_detectors_kinem(){
+void thesis_pics_kinem(){
 
     // -----   Timer   --------------------------------------------------------
     TStopwatch timer;
@@ -38,72 +38,63 @@ void ana_si_detectors_kinem(){
 
     //STYLE   -----------------------------------------------------------------		
     //gROOT->SetStyle("Default");
-    gStyle->SetOptStat(1);
+    gStyle->SetOptStat(0);
     gStyle->SetOptFit(0);
 
     //DEFINE THE INPUT FILE  --------------------------------------------------
 
     TString file_in = "/data.local2/G4_sim_momenta/kinem_case/sim_out_500k_110719.root";
+    //TString file_in = "./sim_out.root";
     //TString file_in = "./sim_out_kinem.root";
     TFile *file0 = TFile::Open(file_in);
     TTree* Tree0 = (TTree*)file0->Get("evt");
     Long64_t nevents = Tree0->GetEntries();
     std::cout<<"Number of entries: "<<nevents<<std::endl;
 
-    TString file_hist_out = "./root_with_hist_kinem/out_hist_500k_110520_thesis.root";
-    //TString file_hist_out = "./root_with_hist_kinem/out_hist.root";
-    TFile * out_hist = new TFile(file_hist_out,"RECREATE");
+   // TString file_hist_out = "./root_with_hist_kinem/out_hist_500k_110520_thesis.root";
+   // TFile * out_hist = new TFile(file_hist_out,"RECREATE");
     //TFile * out_hist = new TFile("out_hist_1m.root","RECREATE");
 
     //HISTOGRAMS DEFINITION
 
     TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",500,35.76,36.05);
    //   TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",500,35.6,36.2);
-    TH1F* h_p_pz = new TH1F("h_p_pz","Longitudinal momentum of proton (GeV/c)",500,1.1,1.4);
-    TH1F* h_s_pt = new TH1F("h_s_pt","Transverse momentum of HI (GeV/c)",500,0.0,0.08);
-    TH1F* h_p_pt = new TH1F("h_p_pt","Transverse momentum of proton (GeV/c)",500,0.0,0.08);
-    TH1F* h_s_px = new TH1F("h_s_px","Px of HI (GeV/c)",500,-0.1,0.1);
-    TH1F* h_p_px = new TH1F("h_p_px","Px of proton (GeV/c)",500,-0.1,0.1);
+   // TH1F* h_p_pz = new TH1F("h_p_pz","Longitudinal momentum of proton (GeV/c)",500,1.1,1.4);
+   // TH1F* h_s_pt = new TH1F("h_s_pt","Transverse momentum of HI (GeV/c)",500,0.0,0.08);
+   // TH1F* h_p_pt = new TH1F("h_p_pt","Transverse momentum of proton (GeV/c)",500,0.0,0.08);
+   // TH1F* h_s_px = new TH1F("h_s_px","Px of HI (GeV/c)",500,-0.1,0.1);
+   // TH1F* h_p_px = new TH1F("h_p_px","Px of proton (GeV/c)",500,-0.1,0.1);
     TH1F* ang_s_p = new TH1F("ang_s_p","Angle between 29S and proton (mrad)",300,0,60);
-    TH1F* ang_s_p_cut = new TH1F("ang_s_p_cut","Angle between 29S and proton (mrad) with selecton on pz s",500,40,55);
+    //TH1F* ang_s_p_cut = new TH1F("ang_s_p_cut","Angle between 29S and proton (mrad) with selecton on pz s",500,40,55);
     TH2F* ang_momz = new TH2F("ang_momz","Correlation between long mom of HI and angle HI-p",300,0,55,600,35.76,36.05);
-    TH2F* ang_momt = new TH2F("ang_momt","Correlation between transv mom of HI and angle HI-p",500,0.0,0.08,500,0,55);
-    TH2F* ang_momtp = new TH2F("ang_momtp","Correlation between transv mom of proton and angle HI-p",500,0.0,0.08,500,0,55);
-    TH2F* h_pt_pt = new TH2F("h_pt_pt","Correlation between transverse momenta of products",500,0.0,0.08,500,0.0,0.08);
-    TH2F* h_pz_pz = new TH2F("h_pz_pz","Correlation between longitudinal momenta of products",500,1.1,1.4,500,35.78,36);
-    TH2F* h_pt_pz = new TH2F("h_pt_pz","Correlation between long mom of HI and transv mom of proton",500,0.0,0.08,500,35.78,36);
-    TH2F* h_pz_pt = new TH2F("h_pz_pt","Correlation between transv mom of HI and long mom of proton",500,1.1,1.4,500,0.0,0.08);
-    TAxis* xaxis = new TAxis();
-    TH2F* h_corr = new TH2F("h_corr","Correlation plot reflecting entries",500,35.76,36.05,500,1,500);
-    TH2F* h_pz_pt_s = new TH2F("h_pz_pt_s","pz 29S - x, pt 29S - y",500,35.76,36.05,500,0.0,0.08);
+    //TH2F* ang_momt = new TH2F("ang_momt","Correlation between transv mom of HI and angle HI-p",500,0.0,0.08,500,0,55);
+    //TH2F* ang_momtp = new TH2F("ang_momtp","Correlation between transv mom of proton and angle HI-p",500,0.0,0.08,500,0,55);
+   // TH2F* h_pt_pt = new TH2F("h_pt_pt","Correlation between transverse momenta of products",500,0.0,0.08,500,0.0,0.08);
+   // TH2F* h_pz_pz = new TH2F("h_pz_pz","Correlation between longitudinal momenta of products",500,1.1,1.4,500,35.78,36);
+   // TH2F* h_pt_pz = new TH2F("h_pt_pz","Correlation between long mom of HI and transv mom of proton",500,0.0,0.08,500,35.78,36);
+   // TH2F* h_pz_pt = new TH2F("h_pz_pt","Correlation between transv mom of HI and long mom of proton",500,1.1,1.4,500,0.0,0.08);
+   // TAxis* xaxis = new TAxis();
+   // TH2F* h_corr = new TH2F("h_corr","Correlation plot reflecting entries",500,35.76,36.05,500,1,500);
+   // TH2F* h_pz_pt_s = new TH2F("h_pz_pt_s","pz 29S - x, pt 29S - y",500,35.76,36.05,500,0.0,0.08);
     //energies
-    TH1F* h_s_en = new TH1F("h_s_en","Total energy of 29S (GeV)",500,44.5,45.5);
+   /* TH1F* h_s_en = new TH1F("h_s_en","Total energy of 29S (GeV)",500,44.5,45.5);
     TH1F* h_p_en = new TH1F("h_p_en","Total energy of proton (GeV)",500,1.,2.0);
     TH1F* h_s_kin = new TH1F("h_s_kin","Kinetic energy of 29S (GeV)",500,17.5,18.5);
     TH1F* h_p_kin = new TH1F("h_p_kin","Kinetic energy of proton (GeV)",500,0.,1.0);
     TH1F* h_s_de = new TH1F("h_s_de","Energy loss of 29S (GeV)",500,0.0,0.001);
     TH1F* h_p_de = new TH1F("h_p_de","Energy loss of proton (GeV)",500,0.0,0.0001);
-
-    TH1F* h_qval = new TH1F("h_qval","Q-value via kin energy difference (MeV)",500,1.4,2.4);
-    TH1F* h_qval1 = new TH1F("h_qval1","Q-value via kin energy difference (MeV)",500,1.4,2.4);
+    */
+   // TH1F* h_qval = new TH1F("h_qval","Q-value via kin energy difference (MeV)",500,1.4,2.4);
+   // TH1F* h_qval1 = new TH1F("h_qval1","Q-value via kin energy difference (MeV)",500,1.4,2.4);
     TH1F* h_qval2 = new TH1F("h_qval2","Q-value via proton pcm (MeV)",500,1.98,2.02);
-    TH1F* h_qval4 = new TH1F("h_qval4","Q-value via proton pcm (MeV)",500,1.98,2.02);
+   /* TH1F* h_qval4 = new TH1F("h_qval4","Q-value via proton pcm (MeV)",500,1.98,2.02);
     TH1F* h_qval3 = new TH1F("h_qval3","Q-value via HI pcm (MeV)",500,1.8,2.2);
     TH1F* h_qval5 = new TH1F("h_qval5","Q-value via HI pcm (MeV)",500,1.8,2.2);
     TH1F* h_qval6 = new TH1F("h_qval6","Q-value via HI pcm at FRS (MeV)",500,-0.1,3.);
     TH1F* h_qval7 = new TH1F("h_qval7","Q-value via HI pcm at FRS (MeV)",500,-0.1,3.);
     TH1F* h_qval8 = new TH1F("h_qval8","Q-value via proton pcm at FRS (MeV)",500,-0.1,3.);
     TH1F* h_qval9 = new TH1F("h_qval9","Q-value via proton pcm at FRS (MeV)",500,-0.1,3.);
-
-    TH1F* h_theta_max_kin = new TH1F("h_theta_kin","Relative angle calculated using kin enegries in formula 2.16 from thesis",100,48.5,51.5);
-    TH1F* h_theta_max_longm = new TH1F("h_theta_longm","Relative angle calculated using long mom of hi in formula 2.16 from thesis",100,48.5,51.5);
-    //TH1F* h_q_meas_kin = new TH1F("h_q_meas_kin","Qvalue calculated using approx kin enegries and measured angles in formula 2.16 from thesis",100,0,3.);
-    TH1F* h_q_meas_kin = new TH1F("h_q_meas_kin","Qvalue calculated using approx kin enegries and measured angles in formula 2.16 from thesis",150,1.8,2.1);
-    //TH1F* h_q_meas_longm = new TH1F("h_q_meas_longm","Qvalue calculated using measured long mom of hi and measured angles in formula 2.16 from thesis",100,0.,3.);
-    TH1F* h_q_meas_longm = new TH1F("h_q_meas_longm","Qvalue calculated using measured long mom of hi and measured angles in formula 2.16 from thesis",150,1.8,2.1);
-    TH2F* h_q_meas_kin_ang = new TH2F("h_q_meas_kin_ang","Correlation between qvalue calculated via kin energy of hi and angle HI-p",250,0,3.,250,0,70);
-    TH2F* h_q_meas_longm_ang = new TH2F("h_q_meas_longm_ang","Correlation between qvalue calculated via kin energy of hi and angle HI-p",250,0,3.,250,0,70);
-
+    */
     //Monte-Carlo Track (input)
     TClonesArray* MCTrackCA;  
     R3BMCTrack** track;
@@ -163,12 +154,6 @@ void ana_si_detectors_kinem(){
     Double_t max_dist = 0.018;  // maximum distance between trajectories 180 mum, if greater hi and p don't come from the same mother
 
     bool hi_1, p_1, hi_2, p_2, hi_3, p_3, hi_4, p_4;  // flags to help looking for coincidences of hi and p in the 1st and 4th detectors 
-
-    Double_t theta_max_kin = 0.; //maximum possible angle between p and Cl, calculated using kinetic energy of hi
-    Double_t theta_max_longm = 0.; //maximum possible angle between p and Cl, calculted using long mom of hi
-    Double_t q_meas_kin = 0.;  //qvalue calculated using approximated kinetic energy of hi and measured angles
-    Double_t q_meas_longm = 0.;  //qvalue calculated using measured p long of hi and measured angles
-    Double_t Ekin_mom = 16.9;
 
     //************* MAIN LOOP OVER EVENTS *************************************
     //for(Int_t i=0;i<10000;i++){
@@ -374,26 +359,18 @@ void ana_si_detectors_kinem(){
        q_pcm_p_frs1 = 4*Mmom*Mmom*pcm_p_frs1*pcm_p_frs1/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
        //**********************************************************************************
 
-      if (ang_p1S >= 49.5 && ang_p1S <= 50.5) {  //condition on max angles, because the formula only works for max angles
-       theta_max_kin = TMath::ASin(1/(2*Mp)*sqrt( (Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi)/((e_hi_lab - Mhi)*((e_hi_lab - Mhi)+2*Mmom)) ) * sqrt(qvalue_in) );
-       q_meas_kin = ((TMath::Sin(ang_p1S*0.001)*2*Mp)*(TMath::Sin(ang_p1S*0.001)*2*Mp) *(e_hi_lab - Mhi)*((e_hi_lab - Mhi)+2*Mmom))/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
-       //printf("theta_max_kin = %f using kin energies \n", theta_max_kin);
-
-       theta_max_longm = TMath::ASin(1/(2*Mp*s_pz)*sqrt( (Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi) ) * sqrt(qvalue_in) );
-       //q_meas_longm = (TMath::Sin(ang_p1S*0.001)*2*Mp*s_pz)*(TMath::Sin(ang_p1S*0.001)*2*Mp*s_pz)/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
-       q_meas_longm = (TMath::Sin(ang_p1S*0.001)*2*Mp*s_pz)*(TMath::Sin(ang_p1S*0.001)*2*Mp*s_pz)/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
-         //printf("theta_max = %f mrad\n using long momentum", theta_max*1000);
-     }
 
 
        //*********** Filling histos ***************************************
-       if(s_pz > 35.8755 && s_pz < 35.94) ang_s_p_cut->Fill(ang_p1S);
+       //if(s_pz > 35.8755 && s_pz < 35.94) ang_s_p_cut->Fill(ang_p1S);
        ang_s_p->Fill(ang_p1S);
-       //if(s_pz > 35.8755 && s_pz < 35.94) ang_momz->Fill(s_pz,ang_p1S);
+       h_s_pz->Fill(s_pz);
        ang_momz->Fill(ang_p1S,s_pz);
+       h_qval2->Fill(q_pcm_p*1000);
+       //if(s_pz > 35.8755 && s_pz < 35.94) ang_momz->Fill(s_pz,ang_p1S);
+  /*     
        ang_momt->Fill(s_pt,ang_p1S);
        ang_momtp->Fill(p_pt,ang_p1S);
-       h_s_pz->Fill(s_pz);
        h_p_pz->Fill(p_pz);
        h_s_pt->Fill(s_pt);
        h_p_pt->Fill(p_pt);
@@ -408,7 +385,7 @@ void ana_si_detectors_kinem(){
        h_p_de->Fill(de_p); 
        h_qval->Fill(q_kin*1000);
        h_qval1->Fill(q_kin*1000 + de_p*1000 + de_s*1000);
-       h_qval2->Fill(q_pcm_p*1000);
+       
        h_qval3->Fill(q_pcm_s*1000);
        h_qval4->Fill(q_pcm_p_ecorr*1000);
        h_qval5->Fill(q_pcm_s_ecorr*1000);
@@ -420,13 +397,7 @@ void ana_si_detectors_kinem(){
        h_p_en->Fill(e_p_lab);
        h_s_kin->Fill(e_hi_lab - Mhi);
        h_p_kin->Fill(e_p_lab - Mp);
-       h_theta_max_kin->Fill(theta_max_kin*1000); // from formula!!
-       h_theta_max_longm->Fill(theta_max_longm*1000);
-       h_q_meas_kin->Fill(q_meas_kin*1000);
-       h_q_meas_longm->Fill(q_meas_longm*1000);
-       h_q_meas_kin_ang->Fill(q_meas_kin*1000,ang_p1S);
-       h_q_meas_longm_ang->Fill(q_meas_longm*1000,ang_p1S);
-
+*/
 
        //******************************************************************
        //cout << "Num of prim "<<primary << endl;
@@ -435,223 +406,6 @@ void ana_si_detectors_kinem(){
        if(MCtracksPerEvent>0)    delete[] track;
 
     }//loop for nevents
-
-
-    xaxis = h_s_pz->GetXaxis();
-    for(Int_t i=0; i<500; i++){
-      for(Int_t j=0; j<500; j++){
-        h_corr->Fill(xaxis->GetBinCenter(i),ang_momz->GetBinContent(i,j));
-      }
-    }
-    printf("max angle betweeen HI and protons is %f mrad \n", ang_p1S_max);
-    printf("pz max is %f GeV/c, pz min is %f GeV/c \n",s_pz_max,s_pz_min);
-    printf("delta p of HI = %f GeV/c \n",s_pz_max-s_pz_min);
-    printf("FRS acceptance = %f\n",h_s_pz->GetMean()/100*1); // FRS acceptance is 2% or +-1%
-    printf("Super-FRS acceptance = %f\n",h_s_pz->GetMean()/100*2.5); // +-2.5%
-
-
-    //MC TRACK CANVAS
-    TCanvas* c1 = new TCanvas("MCTrack","MCTrack",0,0,720,900);
-    c1->SetFillColor(0);
-    c1->SetFrameFillColor(0);
-    c1->cd();
-    c1->Divide(1,2);
-    c1->cd(1);
-    ang_momtp->Draw();
-    c1->cd(2);
-    h_pz_pt_s->Draw();
-
-    TCanvas* c2 = new TCanvas("angles","angles",0,0,720,900);
-    ang_s_p->Draw();
-    ang_s_p_cut->SetLineColor(2);
-    ang_s_p_cut->Draw("same");
-
-  
-  //in-flight decay tracking pics
-    TCanvas* c3 = new TCanvas("momenta1", "Momenta in lab",0,0,800,900);
-    c3->Divide(2,3);
-    c3->cd(1);  
-    h_s_pz->GetXaxis()->SetTitle("Pz of HI (GeV/c)");
-  //  h_s_pz->GetYaxis()->SetTitle("Probability from KS");
-    h_s_pz->SetFillColor(kBlue-8);
-    h_s_pz->Draw("bar");
-    c3->cd(2);
-    h_p_pz->GetXaxis()->SetTitle("Pz of proton (GeV/c)");
-    h_p_pz->SetFillColor(kBlue-8);
-    h_p_pz->Draw("bar");
-    c3->cd(3);
-    h_s_px->GetXaxis()->SetTitle("Px of HI (GeV/c)");
-    h_s_px->Draw();
-   
-    c3->cd(4);
-    h_p_px->GetXaxis()->SetTitle("Px of proton (GeV/c)");
-    h_p_px->Draw();
- 
-
-    c3->cd(5);
-    h_s_pt->GetXaxis()->SetTitle("Pt of HI (GeV/c)");
-    h_s_pt->Draw();
-    c3->cd(6);
-    h_p_pt->GetXaxis()->SetTitle("Pt of proton (GeV/c)");
-    h_p_pt->Draw();
-
-    c3->cd(1);
-    TH1D *project1 = ang_momz->ProjectionX();
-    project1->SetLineColor(2);
-    //project1->Draw("same");
-
-    TCanvas * c4 = new TCanvas("momenta2", "Momenta in lab",800,0,800,900);
-    c4->Divide(2,2);
-    c4->cd(1);
-    h_pt_pt->GetXaxis()->SetTitle("Pt of proton (GeV/c)");
-    h_pt_pt->GetYaxis()->SetTitle("Pt of HI (GeV/c)");
-    h_pt_pt->Draw("colz");
-    c4->cd(2);
-    h_pz_pz->GetXaxis()->SetTitle("Pz of proton (GeV/c)");
-    h_pz_pz->GetYaxis()->SetTitle("Pz of HI (GeV/c)");
-    h_pz_pz->Draw("colz");
-    c4->cd(3);
-    h_pt_pz->GetXaxis()->SetTitle("Pz of proton (GeV/c)");
-    h_pt_pz->GetYaxis()->SetTitle("Pt of HI (GeV/c)");
-    h_pt_pz->Draw("colz");
-    c4->cd(4);
-    h_pz_pt->GetXaxis()->SetTitle("Pt of proton (GeV/c)");
-    h_pz_pt->GetYaxis()->SetTitle("Pz of HI (GeV/c)");
-    h_pz_pt->Draw("colz");
-
-    TCanvas * c5 = new TCanvas("momenta3", "Momenta in lab",1600,0,800,900);
-    c5->Divide(2,2);
-    c5->cd(1);
-    ang_s_p->GetXaxis()->SetTitle("Angle between HI and proton in lab (mrad)");
-    ang_s_p->Draw();
-    //ang_s_p_cut->SetLineColor(2);
-    //ang_s_p_cut->Draw("same");
-    c5->cd(2);
-    ang_momz->GetYaxis()->CenterTitle();
-    ang_momz->GetYaxis()->SetTitle("#vec{p}_{||}(HI) (GeV/c)");
-    ang_momz->GetYaxis()->SetLabelSize(0.04);
-    ang_momz->GetYaxis()->SetTitleSize(0.04);
-    ang_momz->GetXaxis()->CenterTitle();
-    ang_momz->GetXaxis()->SetTitle("#theta_{HI-p} (mrad)");
-    ang_momz->GetXaxis()->SetLabelSize(0.04);
-    ang_momz->GetXaxis()->SetTitleSize(0.04);
-
-
-    ang_momz->Draw("colz");
-    c5->cd(3);
-    ang_momt->GetXaxis()->SetTitle("Pt of HI (GeV/c)");
-    ang_momt->GetYaxis()->SetTitle("Angle between HI and proton in lab (mrad)");
-    ang_momt->Draw("colz");
-    c5->cd(4);
-    h_corr->GetXaxis()->SetTitle("Pz of HI (GeV/c)");
-    h_corr->GetYaxis()->SetTitle("Bin content of correlation plot: pz pf HI vs angle");
-    h_corr->Draw("col");
- 
-
-    TCanvas * c6 = new TCanvas("energy", "Enenrgy in lab",0,900,800,900);
-    c6->Divide(2,3);
-    c6->cd(1);
-    h_s_en->GetXaxis()->SetTitle("Total energy of HI (GeV)");
-    h_s_en->Draw();
-    c6->cd(2);
-    h_p_en->GetXaxis()->SetTitle("Total energy of proton (GeV)");
-    h_p_en->Draw();   
-    c6->cd(3);
-    h_s_kin->GetXaxis()->SetTitle("Kinetic energy of HI (GeV)");
-    h_s_kin->Draw();
-    c6->cd(4);
-    h_p_kin->GetXaxis()->SetTitle("Kinetic energy of proton (GeV)");
-    h_p_kin->Draw();
-    c6->cd(5);
-    h_p_de->GetXaxis()->SetTitle("Energy loss of proton (GeV)");
-    h_p_de->Draw();
-    c6->cd(6);
-   // h_qval->Draw();
-   // h_qval1->SetLineColor(2);
-  //  h_qval1->Draw("same");
-    h_s_de->GetXaxis()->SetTitle("Energy loss of HI (GeV)");
-    h_s_de->Draw();
-
-
-    TCanvas * c7 = new TCanvas("qvalues", "Decay energies calculated differently",900,900,800,900);
-    gStyle->SetOptFit();
-    c7->Divide(1,5);
-    c7->cd(1);
-    h_qval->GetXaxis()->SetTitle("Qvalue calculated via kinetic energies after tracking (MeV)");
-    h_qval->GetXaxis()->SetLabelSize(0.05);
-    h_qval->GetXaxis()->SetTitleSize(0.05);
-    h_qval1->GetXaxis()->SetTitle("Qvalue calculated via kinetic energies after tracking (MeV)");
-    h_qval1->GetXaxis()->SetLabelSize(0.05);
-    h_qval1->GetXaxis()->SetTitleSize(0.05);
-    h_qval1->SetLineColor(8);
-    h_qval1->Draw();
-    h_qval->Draw("same");
-    TLegend *l7_1 = new TLegend(0.1,0.7,0.48,0.9);
-    //legend->SetHeader("","C");         // option "C" allows to center the header
-    l7_1->AddEntry("h_qval","Q-value before energy loss correction","l");
-    l7_1->AddEntry("h_qval1","Q-value after energy loss correction","l");
-    l7_1->Draw("same");
-
-    c7->cd(2);
-    h_qval2->GetXaxis()->CenterTitle();
-    h_qval2->GetXaxis()->SetTitle("Q (MeV)");
-    h_qval2->GetXaxis()->SetLabelSize(0.04);
-    h_qval2->GetXaxis()->SetTitleSize(0.04);
-    h_qval2->GetYaxis()->CenterTitle();
-    h_qval2->GetYaxis()->SetTitle("Intensity (counts)");
-    h_qval2->GetYaxis()->SetLabelSize(0.04);
-    h_qval2->GetYaxis()->SetTitleSize(0.04);
-    h_qval2->Draw();
-    h_qval4->SetLineColor(8);
-    //h_qval2->Fit("gaus","","",1.999,2.001);
-    //h_qval4->Draw("same");
-    TLegend *l8_1 = new TLegend(0.1,0.7,0.48,0.9);
-    //legend->SetHeader("","C");         // option "C" allows to center the header
-    l8_1->AddEntry("h_qval2","Q-value before energy loss correction","l");
-    l8_1->AddEntry("h_qval4","Q-value after energy loss correction","l");
-    //l8_1->AddEntry("gaus", "Gaussian fit", "l");
-    //l8_1->Draw("same");
-
-    c7->cd(3);
-    h_qval3->GetXaxis()->SetTitle("Qvalue calculated via pcm of HI (MeV)");
-    h_qval3->GetXaxis()->SetLabelSize(0.05);
-    h_qval3->GetXaxis()->SetTitleSize(0.05);
-    h_qval3->Draw();
-    h_qval5->SetLineColor(8);
-    h_qval3->Fit("gaus");
-    h_qval5->Draw("same");
-    TLegend *l8_2 = new TLegend(0.1,0.7,0.48,0.9);
-    //legend->SetHeader("","C");         // option "C" allows to center the header
-    l8_2->AddEntry("h_qval3","Q-value before energy loss correction","l");
-    l8_2->AddEntry("h_qval5","Q-value after energy loss correction","l");
-    //l8_2->AddEntry("gaus", "Gaussian fit", "l");
-    l8_2->Draw("same");
-
-    c7->cd(4);
-    h_qval6->GetXaxis()->SetTitle("Qvalue calculated via pcm of HI with diff plab components (MeV)");
-    h_qval6->GetXaxis()->SetLabelSize(0.05);
-    h_qval6->GetXaxis()->SetTitleSize(0.05);
-    h_qval6->Draw();
-    h_qval6->SetLineColor(6);
-    h_qval7->Draw("sames");
-    h_qval7->Fit("gaus","","", 1.95, 2.1);
-    TLegend *l7 = new TLegend(0.1,0.7,0.48,0.9);
-    //legend->SetHeader("","C");         // option "C" allows to center the header
-    l7->AddEntry("h_qval6","Q-value via p longitudinal of HI","l");
-    l7->AddEntry("h_qval7","Q-value via p transverse of HI","l");
-    //l7->AddEntry("gaus", "Gaussian fit", "l");
-    l7->Draw("same");
-    //c7->SaveAs("canvas_with_qvalue.root");
-
-    c7->cd(5);
-    h_qval8->GetXaxis()->SetTitle("Qvalue calculated via pcm of proton with diff plab components (MeV)");
-    h_qval8->GetXaxis()->SetLabelSize(0.05);
-    h_qval8->GetXaxis()->SetTitleSize(0.05);
-    h_qval8->Draw();
-    h_qval8->SetLineColor(6);
-    h_qval9->Draw("sames");
-   // h_qval9->Fit("gaus","","", 1.95, 2.1);
-   // TLegend *l7 = new TLegend(0.1,0.7,0.48,0.9);
 
     TCanvas *c_thes = new TCanvas("thesis", "for thesis",0,900,800,900);
     gStyle->SetOptStat(0);
@@ -703,69 +457,6 @@ void ana_si_detectors_kinem(){
     h_qval2->GetYaxis()->SetLabelSize(0.05);
     h_qval2->GetYaxis()->SetTitleSize(0.06);
     h_qval2->Draw();
-
-    TCanvas * c8 = new TCanvas("theta", "Theta max from formula",0,900,1800,900);
-    c8->Divide(2,3);
-    c8->cd(1);
-    h_theta_max_kin->GetXaxis()->SetTitle("Relative angle (mrad)");
-    h_theta_max_kin->Draw();
-    c8->cd(2);
-    h_theta_max_longm->GetXaxis()->SetTitle("Relative angle (mrad)");
-    h_theta_max_longm->Draw();
-    c8->cd(3);
-    h_q_meas_kin->GetXaxis()->SetTitle("Qvalue (MeV)");
-    //h_q_meas_kin->Fit("gaus");
-    h_q_meas_kin->Draw();
-    c8->cd(4);
-    h_q_meas_longm->GetXaxis()->SetTitle("Qvalue (MeV)");
-    //h_q_meas_longm->Fit("gaus");
-    h_q_meas_longm->Draw();
-
-    c8->cd(5);
-    h_q_meas_kin_ang->GetXaxis()->SetTitle("Qvalue (MeV)");
-    h_q_meas_kin_ang->GetYaxis()->SetTitle("Relative angle (mrad)");
-    h_q_meas_kin_ang->Draw("colz");
-
-    c8->cd(6);
-    h_q_meas_longm_ang->GetXaxis()->SetTitle("Qvalue (MeV)");
-    h_q_meas_longm_ang->GetYaxis()->SetTitle("Relative angle (mrad)");
-    h_q_meas_longm_ang->Draw("colz");
-
-
-
-    // writing histograms into root file 
-    ang_s_p->Write();
-    ang_momz->Write();
-    ang_momt->Write();
-    ang_momtp->Write();
-    h_s_pz->Write();
-    h_p_pz->Write();
-    h_s_pt->Write();
-    h_p_pt->Write();
-    h_s_px->Write();
-    h_p_px->Write();
-    h_pt_pt->Write();
-    h_pz_pz->Write();
-    h_pt_pz->Write();
-    h_pz_pt->Write();
-    h_pz_pt_s->Write();
-    h_corr->Write();
-    h_p_de->Write();
-    h_s_de->Write();
-    h_qval->Write();
-    h_qval1->Write();
-    h_qval2->Write();
-    h_qval3->Write();
-    h_qval4->Write();
-    h_qval5->Write();
-    h_qval6->Write();
-    h_qval7->Write();
-    h_s_en->Write();
-    h_p_en->Write();
-    h_s_kin->Write();
-    h_p_kin->Write();
-    c1->Write();c2->Write();c3->Write();c4->Write();c5->Write();c6->Write();c7->Write();c_thes->Write();
-
 
 
     // -----   Finish   -------------------------------------------------------

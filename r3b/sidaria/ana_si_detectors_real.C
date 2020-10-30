@@ -42,15 +42,16 @@ void ana_si_detectors_real(){
 
     //DEFINE THE INPUT FILE  --------------------------------------------------
 
-    //TString file_in = "/data.local2/G4_sim_momenta/real_case/sim_out_real_500k_190919.root";
-    TString file_in = "./sim_out_real.root";
+    TString file_in = "/data.local2/G4_sim_momenta/real_case/sim_out_real_air_500k_041019.root";
+    //TString file_in = "./sim_out_real.root";
     //TString file_in = "/data.local2/G4_sim_momenta/sim_out_real.root";
+    //TString file_in = "./sim_out_real_thesis_10k.root";
     TFile *file0 = TFile::Open(file_in);
     TTree* Tree0 = (TTree*)file0->Get("evt");
     Long64_t nevents = Tree0->GetEntries();
     std::cout<<"Number of entries: "<<nevents<<std::endl;
 
-    //TString file_hist_out = "./root_with_hist_real/out_hist_500k_190919.root";
+    //TString file_hist_out = "./root_with_hist_real/out_hist_real_thesis_10k.root";
     TString file_hist_out = "./root_with_hist_real/out_hist.root";
     TFile * out_hist = new TFile(file_hist_out,"RECREATE");
     //TFile * out_hist = new TFile("out_hist_1m.root","RECREATE");
@@ -64,7 +65,7 @@ void ana_si_detectors_real(){
     TH1F* h_p_pt = new TH1F("h_p_pt","Transverse momentum of proton (GeV/c)",100,0.0,0.08);
     TH1F* h_s_px = new TH1F("h_s_px","Px of HI (GeV/c)",100,-0.5,0.5);
     TH1F* h_p_px = new TH1F("h_p_px","Px of proton (GeV/c)",100,-0.5,0.5);
-    TH1F* ang_s_p = new TH1F("ang_s_p","Angle between 29S and proton (mrad)",100,0,70);
+    TH1F* ang_s_p = new TH1F("ang_s_p","Angle between 29S and proton (mrad)",70,0,70);
     TH1F* ang_s_p_cut = new TH1F("ang_s_p_cut","Angle between 29S and proton (mrad) with selecton on pz s",100,40,55);
     TH2F* ang_momz = new TH2F("ang_momz","Correlation between long mom of HI and angle HI-p",100,32.0,32.8,100,0,80);
     TH2F* ang_momt = new TH2F("ang_momt","Correlation between transv mom of HI and angle HI-p",100,0.0,0.3,100,0,80);
@@ -94,6 +95,13 @@ void ana_si_detectors_real(){
     TH1F* h_qval7 = new TH1F("h_qval7","Q-value via HI pcm at FRS (MeV)",500,0.0,4.4);
     TH1F* h_qval8 = new TH1F("h_qval8","Q-value via proton pcm at FRS (MeV)",500,0.0,4.4);
     TH1F* h_qval9 = new TH1F("h_qval9","Q-value via proton pcm at FRS (MeV)",500,0.0,4.4);
+
+    TH1F* h_theta_max_kin = new TH1F("h_theta_kin","Relative angle calculated using kin enegries in formula 2.16 from thesis",100,50.5,56.5);
+    TH1F* h_theta_max_longm = new TH1F("h_theta_longm","Relative angle calculated using long mom of hi in formula 2.16 from thesis",100,52.5,56.5);
+    TH1F* h_q_meas_kin = new TH1F("h_q_meas_kin","Qvalue calculated using approx kin enegries and measured angles in formula 2.16 from thesis",100,0,3.);
+    TH1F* h_q_meas_longm = new TH1F("h_q_meas_longm","Qvalue calculated using measured long mom of hi and measured angles in formula 2.16 from thesis",100,0.,3.);
+    TH2F* h_q_meas_kin_ang = new TH2F("h_q_meas_kin_ang","Correlation between qvalue calculated via kin energy of hi and angle HI-p",250,0,3.,250,0,70);
+    TH2F* h_q_meas_longm_ang = new TH2F("h_q_meas_longm_ang","Correlation between qvalue calculated via kin energy of hi and angle HI-p",250,0,3.,250,0,70);
 
     //Monte-Carlo Track (input)
     TClonesArray* MCTrackCA;  
@@ -159,9 +167,16 @@ void ana_si_detectors_real(){
     bool hi_1, p_1, hi_2, p_2, hi_3, p_3, hi_4, p_4;  // flags to help looking for coincidences of hi and p in the 1st and 4th detectors 
     bool flag;
 
+    Double_t limit = 32.08; // value to calculate range for large statistics for 2 MeV qdecay
+    Double_t theta_max_kin = 0.; //maximum possible angle between p and Cl, calculated using kinetic energy of hi
+    Double_t theta_max_longm = 0.; //maximum possible angle between p and Cl, calculted using long mom of hi
+    Double_t q_meas_kin = 0.;  //qvalue calculated using approximated kinetic energy of hi and measured angles
+    Double_t q_meas_longm = 0.;  //qvalue calculated using measured p long of hi and measured angles
+    Double_t Ekin_mom = 16.9;
+
     //************* MAIN LOOP OVER EVENTS *************************************
-    //for(Int_t i=0;i<100000;i++){
-    for(Int_t i=0;i<nevents;i++){
+    for(Int_t i=0;i<10000;i++){
+    //for(Int_t i=0;i<nevents;i++){
        //cout << "Event " << i << endl;
        hi_1 = false; p_1 = false;  // at the beggining of each event logic is reloaded
        hi_2 = false; p_2 = false;
@@ -218,7 +233,7 @@ void ana_si_detectors_real(){
        // *************** GetDetCopyID() - detector number, 1,2,3 or 4
        // here we have basically any number of tracks per event, because different physics processes happen in target and silicons
        // I need to look for coincidences here, i.e. HI and proton in the same detector
-       for(Int_t h=0;h<traPerEvent;h++){          
+       for(Int_t h=0;h<traPerEvent;h++){         
            //******* 29S in 1st silicon *******************
            if(Tra[h]->GetPdi()==1000160290 && Tra[h]->GetDetCopyID()==1){
               hi_1 = true;
@@ -234,11 +249,14 @@ void ana_si_detectors_real(){
             //  cout << " y in um for 29S " << y[0][0]*10000 << " and " << y[0][0]*10000 + 0.01/384.0*10000*(0.5 - gRandom->Uniform(0,1)) <<endl;
 
               de_s = Tra[h]->GetEloss();
+              //printf("eloss in 1st det = %f \n",Tra[h]->GetEloss());
               e_hi_lab = sqrt(s_px*s_px + s_py*s_py + s_pz*s_pz + Mhi*Mhi);
              // printf("e_hi_lab = %f\n",e_hi_lab);
             //  cout << "Detector " << Tra[h]->GetDetCopyID() << endl;
-              if(s_pz > s_pz_max) {s_pz_max = s_pz; s_pz_min = s_pz_max;}
-              if(s_pz < s_pz_min && s_pz > 32.08) s_pz_min = s_pz;
+        
+              //if(s_pz > s_pz_max) {s_pz_max = s_pz; s_pz_min = s_pz_max;}
+              //else if(s_pz < s_pz_min && s_pz > 0.0) s_pz_min = s_pz;
+
              // printf("pz is %f, pz max is %f, pz min is %f\n",s_pz, s_pz_max,s_pz_min);
            }
            //******* proton in 1st silicon ****************
@@ -267,6 +285,7 @@ void ana_si_detectors_real(){
               x[0][3] = Tra[h]->GetXOut();
               y[0][3] = Tra[h]->GetYOut();
               z[0][3] = Tra[h]->GetZOut();
+              //printf("eloss in 4th det = %f \n",Tra[h]->GetEloss());
               //cout << " xyz for 29S in 4th detector " << x[0][3] << " " << y[0][3] << " " << z[0][3] <<endl;
             }
 
@@ -283,8 +302,7 @@ void ana_si_detectors_real(){
             if(Tra[h]->GetPdi()==2212 && Tra[h]->GetDetCopyID()==2) { p_2 = true; }
             if(Tra[h]->GetPdi()==1000160290 && Tra[h]->GetDetCopyID()==3) { hi_3 = true; /*cout << "29s is in 3rd detector" << endl;*/}
             if(Tra[h]->GetPdi()==2212 && Tra[h]->GetDetCopyID()==3) { p_3 = true; }
-
-              
+             
        }//for tracker
        // ************** END OF LOOP over tracks per event ************************************
        //cout << "Tracks per event " << traPerEvent << endl;
@@ -303,9 +321,13 @@ void ana_si_detectors_real(){
 
 
        // ************* COINCIDENCE CONDITION - track from both hi and p found in all silicons ****************
-       if(hi_1 && p_1 /*&& hi_2 && p_2 && hi_3 && p_3*/ && hi_4 && p_4) {
+  //     if(hi_1 && p_1 /*&& hi_2 && p_2 && hi_3 && p_3*/ && hi_4 && p_4) {
+         if(hi_1 /*&& hi_2 && p_2 && hi_3 && p_3*/ && hi_4) {
 
          counter ++;
+         if (counter==1) {s_pz_max = s_pz; s_pz_min = s_pz_max;}
+         else if (s_pz > s_pz_max) {s_pz_max = s_pz;}
+         else if (s_pz < s_pz_min && s_pz > limit) {s_pz_min = s_pz;}
          //*********** Calculation of the angles between tracks ****************
          //*********** between 1st and 4th silicon (second indexes 0 and 3) ****
 
@@ -408,6 +430,25 @@ void ana_si_detectors_real(){
          q_pcm_p_frs1 = 4*Mmom*Mmom*pcm_p_frs1*pcm_p_frs1/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
          //**********************************************************************************
 
+        // estimate what was kinetic energy of mother nucleus before decay
+         Ekin_mom = e_hi_lab - Mhi + e_p_lab - Mp + 2*de_s + 2*de_p;
+         //theta_max_kin = TMath::ASin(1/(2*Mp)*sqrt( (Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi)/(Ekin_mom*(Ekin_mom+2*Mmom)) ) * sqrt(qvalue_in) );
+         //q_meas_kin = ((TMath::Sin(ang_p1S*0.001)*2*Mp)*(TMath::Sin(ang_p1S*0.001)*2*Mp)*Ekin_mom*(Ekin_mom+2*Mmom))/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
+         //printf("Ekin_mom = %f GeV\n", Ekin_mom);
+
+         // calculation of theta max from formula 2.16 from thesis
+         //if (ang_p1S >= 40 && ang_p1S <= 60) {  //condition on max angles, because the formula only works for max angles
+          theta_max_kin = TMath::ASin(1/(2*Mp)*sqrt( (Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi)/((e_hi_lab - Mhi)*((e_hi_lab - Mhi)+2*Mmom)) ) * sqrt(qvalue_in) );
+          q_meas_kin = ((TMath::Sin(ang_p1S*0.001)*2*Mp)*(TMath::Sin(ang_p1S*0.001)*2*Mp) *(e_hi_lab - Mhi)*((e_hi_lab - Mhi)+2*Mmom))/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
+          //printf("theta_max_kin = %f using kin energies \n", theta_max_kin);
+
+          theta_max_longm = TMath::ASin(1/(2*Mp*s_pz)*sqrt( (Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi) ) * sqrt(qvalue_in) );
+          //if (ang_p1S >= 52.00 && ang_p1S <= 53.0) {
+          q_meas_longm = (TMath::Sin(ang_p1S*0.001)*2*Mp*s_pz)*(TMath::Sin(ang_p1S*0.001)*2*Mp*s_pz)/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
+          //q_meas_longm = (TMath::Sin(theta_max_longm)*2*Mp*s_pz)*(TMath::Sin(theta_max_longm)*2*Mp*s_pz)/((Mmom + Mp - Mhi)*(Mmom - Mp + Mhi)*(Mmom + Mp + Mhi));
+         //printf("theta_max = %f mrad\n using long momentum", theta_max*1000);
+          //}
+
          //*********** Filling histos ***************************************
          if(s_pz > 35.8755 && s_pz < 35.94) ang_s_p_cut->Fill(ang_p1S);
          ang_s_p->Fill(ang_p1S);
@@ -442,6 +483,12 @@ void ana_si_detectors_real(){
          h_p_en->Fill(e_p_lab);
          h_s_kin->Fill(e_hi_lab - Mhi);
          h_p_kin->Fill(e_p_lab - Mp);
+         h_theta_max_kin->Fill(theta_max_kin*1000); // from formula!!
+         h_theta_max_longm->Fill(theta_max_longm*1000);
+         h_q_meas_kin->Fill(q_meas_kin*1000);
+         h_q_meas_longm->Fill(q_meas_longm*1000);
+         h_q_meas_kin_ang->Fill(q_meas_kin*1000,ang_p1S);
+         h_q_meas_longm_ang->Fill(q_meas_longm*1000,ang_p1S);
          //******************************************************************
          //cout << "Num of prim "<<primary << endl;
        } // end of if coincidence condition
@@ -578,6 +625,34 @@ void ana_si_detectors_real(){
     h_s_de->GetXaxis()->SetTitle("Energy loss of HI (GeV)");
     h_s_de->Draw();
 
+    TCanvas * c8 = new TCanvas("theta", "Theta max from formula",0,900,1800,900);
+    c8->Divide(2,3);
+    c8->cd(1);
+    h_theta_max_kin->GetXaxis()->SetTitle("Relative angle (mrad)");
+    h_theta_max_kin->Draw();
+    c8->cd(2);
+    h_theta_max_longm->GetXaxis()->SetTitle("Relative angle (mrad)");
+    h_theta_max_longm->Draw();
+    c8->cd(3);
+    h_q_meas_kin->GetXaxis()->SetTitle("Qvalue (MeV)");
+    //h_q_meas_kin->Fit("gaus");
+    h_q_meas_kin->Draw();
+    c8->cd(4);
+    h_q_meas_longm->GetXaxis()->SetTitle("Qvalue (MeV)");
+    //h_q_meas_longm->Fit("gaus");
+    h_q_meas_longm->Draw();
+
+     c8->cd(5);
+    h_q_meas_kin_ang->GetXaxis()->SetTitle("Qvalue (MeV)");
+    h_q_meas_kin_ang->GetYaxis()->SetTitle("Relative angle (mrad)");
+    h_q_meas_kin_ang->Draw("colz");
+
+    c8->cd(6);
+    h_q_meas_longm_ang->GetXaxis()->SetTitle("Qvalue (MeV)");
+    h_q_meas_longm_ang->GetYaxis()->SetTitle("Relative angle (mrad)");
+    h_q_meas_longm_ang->Draw("colz");
+ 
+ 
 /*
     TCanvas * c7 = new TCanvas("qvalues", "Decay energies calculated differently",900,900,800,900);
     gStyle->SetOptFit();
@@ -686,8 +761,10 @@ void ana_si_detectors_real(){
     h_p_en->Write();
     h_s_kin->Write();
     h_p_kin->Write();
+    h_theta_max_kin->Write();
+    h_theta_max_longm->Write();
     c1->Write();c2->Write();c3->Write();c4->Write();c5->Write();c6->Write();//c7->Write();
-
+    c8->Write();
 
 
     // -----   Finish   -------------------------------------------------------

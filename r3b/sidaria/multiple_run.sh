@@ -30,7 +30,7 @@ fi
 echo '    '
 #for (( k=$stacount ; k<=$maxcount ; k++ ))
 #I want to go with larger step 
-for (( k=$stacount ; k<=$maxcount ; k++ ))
+for (( k=$stacount ; k<=$maxcount ; k+=1))
   do
   for (( i=0; i<$runnumb ; i++ ))
     do 
@@ -41,13 +41,14 @@ for (( k=$stacount ; k<=$maxcount ; k++ ))
 EOF
 	  echo '    '
       echo 'Input to script: iteration' $i 'for' $k 'counts' 
-      root -l -q 'ana_width_real.C('$i','$k','$runnumb')'
+      root -l -q 'ana_width_real_t.C('$i','$k','$runnumb')'
     done
   echo '    '
   echo $runnumb 'iterations over' $k 'counts are over!'
   echo '    '
   done
-echo 'Output in mom_widths.txt!'
+#echo 'Output in mom_widths.txt!'
+echo 'Output in mom_widths_t.txt!'
 duration=$(( SECONDS - start ))
 echo 'It took' $duration 'sec or' $(($duration/3600)) 'hours'
 
