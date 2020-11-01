@@ -42,7 +42,8 @@ void ana_si_detectors_real(){
 
     //DEFINE THE INPUT FILE  --------------------------------------------------
 
-    TString file_in = "/data.local2/G4_sim_momenta/real_case/sim_out_real_air_500k_041019.root";
+    TString file_in = "/data.local2/G4_sim_momenta/real_case/sim_out_real_500k_nospread.root";
+    //TString file_in = "/data.local2/G4_sim_momenta/real_case/sim_out_real_500k_spread.root";
     //TString file_in = "./sim_out_real.root";
     //TString file_in = "/data.local2/G4_sim_momenta/sim_out_real.root";
     //TString file_in = "./sim_out_real_thesis_10k.root";
@@ -52,7 +53,8 @@ void ana_si_detectors_real(){
     std::cout<<"Number of entries: "<<nevents<<std::endl;
 
     //TString file_hist_out = "./root_with_hist_real/out_hist_real_thesis_10k.root";
-    TString file_hist_out = "./root_with_hist_real/out_hist.root";
+    TString file_hist_out = "./root_with_hist_real/out_hist_100k_nospread.root";
+    //TString file_hist_out = "./root_with_hist_real/out_hist_500k_nospread.root";
     TFile * out_hist = new TFile(file_hist_out,"RECREATE");
     //TFile * out_hist = new TFile("out_hist_1m.root","RECREATE");
 
@@ -175,7 +177,7 @@ void ana_si_detectors_real(){
     Double_t Ekin_mom = 16.9;
 
     //************* MAIN LOOP OVER EVENTS *************************************
-    for(Int_t i=0;i<10000;i++){
+    for(Int_t i=0;i<100000;i++){
     //for(Int_t i=0;i<nevents;i++){
        //cout << "Event " << i << endl;
        hi_1 = false; p_1 = false;  // at the beggining of each event logic is reloaded

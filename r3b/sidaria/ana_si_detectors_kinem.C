@@ -43,22 +43,22 @@ void ana_si_detectors_kinem(){
 
     //DEFINE THE INPUT FILE  --------------------------------------------------
 
-    TString file_in = "/data.local2/G4_sim_momenta/kinem_case/sim_out_500k_110719.root";
-    //TString file_in = "./sim_out_kinem.root";
+    //TString file_in = "/data.local2/G4_sim_momenta/kinem_case/sim_out_500k_110719.root";
+    TString file_in = "./sim_out_kinem.root";
     TFile *file0 = TFile::Open(file_in);
     TTree* Tree0 = (TTree*)file0->Get("evt");
     Long64_t nevents = Tree0->GetEntries();
     std::cout<<"Number of entries: "<<nevents<<std::endl;
 
-    TString file_hist_out = "./root_with_hist_kinem/out_hist_500k_110520_thesis.root";
-    //TString file_hist_out = "./root_with_hist_kinem/out_hist.root";
+    //TString file_hist_out = "./root_with_hist_kinem/out_hist_500k_110520_thesis.root";
+    TString file_hist_out = "./root_with_hist_kinem/out_hist_100k_noloss.root";
     TFile * out_hist = new TFile(file_hist_out,"RECREATE");
     //TFile * out_hist = new TFile("out_hist_1m.root","RECREATE");
 
     //HISTOGRAMS DEFINITION
 
     TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",500,35.76,36.05);
-   //   TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",500,35.6,36.2);
+    //TH1F* h_s_pz = new TH1F("h_s_pz","Longitudinal momentum of HI (GeV/c)",500,35.0,37.0);
     TH1F* h_p_pz = new TH1F("h_p_pz","Longitudinal momentum of proton (GeV/c)",500,1.1,1.4);
     TH1F* h_s_pt = new TH1F("h_s_pt","Transverse momentum of HI (GeV/c)",500,0.0,0.08);
     TH1F* h_p_pt = new TH1F("h_p_pt","Transverse momentum of proton (GeV/c)",500,0.0,0.08);
